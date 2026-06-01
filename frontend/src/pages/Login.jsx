@@ -13,7 +13,7 @@ function Login() {
       e.preventDefault();
       try {
         await login(username, password);
-        navigate('/');
+        navigate('/pages/Home');
       } catch (err) {
         setError(err.response?.data?.error || "Ошибка входа");
       }
@@ -47,10 +47,7 @@ function Login() {
                 </div>
 
                 <div>
-                    <button
-                        type="submit"
-                        value="Войти"
-                    />
+                    <button type="submit">Войти</button>
                 </div>
             </form>
 

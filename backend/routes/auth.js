@@ -18,8 +18,8 @@ const registerRules = [
 ];
 
 const loginRules = [
-    body('username').notEmpty().withMessage('Некорректный логин: Проверьте правильность ввода имени'),
-    body('password').notEmpty().withMessage('Пароль обязателен: Проверьте правильность ввода пароля')
+    body('username').notEmpty().isLength({ min: 3, max: 50 }).withMessage('Длина имени не менее 3-50 символов'),
+    body('password').notEmpty().isLength({ min: 6 }).withMessage('Длина пароля не менее 6 символов')
 ];
 
 // API Эндпоинт регистрации
@@ -33,15 +33,15 @@ router.post('/register', registerRules, validate, async (req, res) => {
             return res.status(409).json({ success: false, message: "Пользователь уже существует" });
         }
 
-        const hashedPassword = new bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         const [result] = await db.query(
             "INSERT INTO users (email, password, username, role) VALUES (?, ?, ?, ?)",
-            [email, hashedPassword, username || null, "user"]
+            [email, hashedPassword, username, "user"]
         );
 
         const token = jwt.sign(
-            { id: result.insertId, email, role: "user" },
+            { id: result.insertId, email: email, role: "user" },
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
         );
@@ -51,7 +51,7 @@ router.post('/register', registerRules, validate, async (req, res) => {
             message: "Регистрация успешна",
             data: {
                 token,
-                user: { id: result.insertId, email, username: username || null, role: "user" }
+                user: { id: result.insertId, email: email, username: username, role: "user" }
             }
         });
 

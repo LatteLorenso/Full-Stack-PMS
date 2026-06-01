@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import Tasks from './pages/Tasks';
@@ -24,6 +25,7 @@ function AppContent() {
 
             <Routes>
                 <Route path='/login' element={<Login />} />
+                <Route path='/register' element={<Register />} />
 
                 <Route
                     path='/'

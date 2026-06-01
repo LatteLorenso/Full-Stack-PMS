@@ -13,10 +13,10 @@ function Register() {
     const handleSubmit = async (e) => {
       e.preventDefault();
       try {
-        await login(username, password);
-        navigate('/');
+        await register(email, password, username);
+        navigate('/pages/Home');
       } catch (err) {
-        setError(err.response?.data?.error || "Ошибка входа");
+        setError(err.response?.data?.error || "Ошибка регистрации");
       }
     };
 
@@ -58,10 +58,7 @@ function Register() {
                 </div>
 
                 <div>
-                    <button
-                        type="submit"
-                        value="Зарегистрироваться"
-                    />
+                    <button type="submit">Зарегистрироваться</button>
                 </div>
             </form>
 
