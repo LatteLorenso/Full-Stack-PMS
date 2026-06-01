@@ -27,12 +27,12 @@ function ProjectDetail({ project, onDelete, onUpdate }) {
                 </>
             ) : (
                 <>
-                    <input 
+                    <input
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
     
-                    <input 
+                    <input
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                     />
