@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import TaskDetail from '../components/TaskDetail';
 
 function Tasks({ projectId }) {
     const [tasks, setTasks] = useState([]);
@@ -101,21 +102,14 @@ function Tasks({ projectId }) {
                 <button type='submit'>Create Task</button>
             </form>
 
-            {tasks.map(task => {
-                <div key={task.id}>
-                    <h3>{task.title}</h3>
-                    <p>{task.description}</p>
-
-                    <p>Status: {task.status}</p>
-                    <p>Assigned: {task.assigned_to}</p>
-
-                    <button onClick={() => updateStatus(task.id, 'todo')}>Todo</button>
-                    <button onClick={() => updateStatus(task.id, 'in_progress')}>In Progress</button>
-                    <button onClick={() => updateStatus(task.id, 'done')}>Done</button>
-
-                    <button onClick={() => deleteTask(task.id)}>Delete</button>
-                </div>
-            })}
+            {tasks.map(task => (
+                <TaskDetail
+                    key={task.id}
+                    project={task}
+                    onDelete={deleteTask}
+                    onUpdate={updateTask}
+                />
+            ))}
         </div>
     );
 }
