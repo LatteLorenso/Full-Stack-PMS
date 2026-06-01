@@ -1,14 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Route, Routes, Navigate, Link } from 'react-router-dom';
 
 function Home() {
     return (
         <div>
-            <h1>Project Management App</h1>
-
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/projects">Projects</Link>
-            <Link to="/tasks">Tasks</Link>
+            <h1 style={{ fontSize: "1.25rem" }}>Project Management App</h1>
         </div>
     );
 }

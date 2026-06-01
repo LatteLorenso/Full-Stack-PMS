@@ -13,7 +13,7 @@ function Login() {
       e.preventDefault();
       try {
         await login(username, password);
-        navigate('/pages/Home');
+        navigate('/home');
       } catch (err) {
         setError(err.response?.data?.error || "Ошибка входа");
       }

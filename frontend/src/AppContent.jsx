@@ -2,14 +2,15 @@ import React from 'react';
 import { Route, Routes, Navigate, Link } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 
-import Navbar from './components/Navbar';
-
 import Home from './pages/Home';
+import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
+import ProjectDetail from './components/ProjectDetail';
 import Tasks from './pages/Tasks';
+import TaskDetail from './components/TaskDetail';
 
 const PrivateRoute = ({ children }) => {
     const { token } = useAuth();
@@ -17,7 +18,7 @@ const PrivateRoute = ({ children }) => {
 };
 
 function AppContent() {
-    const { token } = useAuth;
+    const { token } = useAuth();
 
     return (
         <>
@@ -63,7 +64,7 @@ function AppContent() {
                     }
                 />
 
-                <Route path='*' element={<Login />} />
+                <Route path='*' element={<Navigate to='/login' />} />
             </Routes>
         </>
     );

@@ -1,0 +1,66 @@
+/* ====== CSS VARIABLES ====== */
+:root {
+    /* ===== ОСНОВНОЙ ФОН ===== */
+    --color-bg-header: rgba(5, 6, 10, 0.5);          /* основной фон хеддера */
+    --color-bg-modal: rgba(5, 6, 10, 0.9);          /* основной фон модального окна */
+    --color-bg-main: #05060a;          /* основной фон сайта */
+    --color-bg-secondary: #0a0d14;     /* секции с акцентом */
+    --color-bg-glass: rgba(255,255,255,0.03); /* стеклянные карточки */
+    --color-bg-tertiary: #0a0a0a;
+
+    /* ===== BRAND / CORE COLOR ===== */
+    --color-brand-primary: #008cff;       /* основной цвет сайта */
+    --color-primary-glow-soft: 0 0 15px rgba(0, 234, 255, 0.3); /* слабый акцент glow */
+    --color-primary-glow-strong: 0 0 50px rgba(0, 234, 255, 0.7); /* сильный акцент glow */
+    --color-second-glow-soft: 0 0 15px rgba(155, 92, 255, 0.3); /* слабый акцент glow */
+    --color-second-glow-strong: 0 0 50px rgba(155, 92, 255, 0.7); /* сильный акцент glow */
+
+    /* ===== ТЕКСТ ===== */
+    --color-text-main: #e6e9f0;        /* основной текст */
+    --color-text-muted: #9aa3b2;       /* второстепенный текст */
+    --color-text-dim: #7b8291;         /* подсказки, мелкий текст */
+
+    /* ===== АКЦЕНТЫ (AM – I – GUESS – ?) ===== */
+    --color-accent-am: #00eaff;        /* AM — существование */
+    --color-accent-i: #9b5cff;         /* I — интеллект / AI */
+    --color-accent-guess: #00ffb3;     /* GUESS — вероятность */
+    --color-accent-question: #ff4d4d;  /* ? — неопределенность */
+
+    /* ===== КНОПКИ ===== */
+    --color-btn-primary: #00eaff;      /* фон основной кнопки */
+    --color-btn-primary-darker: #00eaffd8;
+    --color-btn-second: #9b5cff;       /* фон / граница второстепенной кнопки */
+    --color-btn-second-darker: #9b5cffd8;
+    --color-btn-text: #05060a;         /* цвет текста на кнопках */
+
+    /* ===== ГРАНИЦЫ / ЛИНИИ ===== */
+    --color-border-soft: rgba(255,255,255,0.08);
+    --color-border-strong: rgba(255,255,255,0.15);
+
+    /* ===== ЭФФЕКТЫ ===== */
+    --glow-cyan: 0 0 20px rgba(0,234,255,0.25);
+    --glow-green: 0 0 20px rgba(0,255,179,0.5);
+    --glow-purple: 0 0 20px rgba(155,92,255,0.25);
+
+    /* ===== ШРИФТЫ ===== */
+    --body-font: 'Rajdhani', sans-serif;
+    --code-font: 'JetBrains Mono', monospace;
+
+    /* ===== РАДИУСЫ ===== */
+    --radius-sm: 2px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+
+    /* ===== Отступы ===== */
+    --header-height: 4.5rem;
+}
+
+body
+{
+    font-family: var(--body-font);
+    background-color: #dfdfdf;
+    color: var(--color-text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: none;
+}
