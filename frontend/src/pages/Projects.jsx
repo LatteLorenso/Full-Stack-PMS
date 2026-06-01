@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import ProjectDetail from './ProjectDetail';
 
 function Projects() {
     const [projects, setProjects] = useState([]);
@@ -69,17 +70,12 @@ function Projects() {
 
             <ul>
                 {projects.map(project => (
-                    <div key={project.id}>
-                        <span>{project.name}</span>
-
-                        <button onClick={() => deleteProject(project.id)}>
-                            Удалить
-                        </button>
-
-                        <button onClick={() => updateProject(project.id)}>
-                            Изменить
-                        </button>
-                    </div>
+                    <ProjectDetail
+                        key={project.id}
+                        project={project}
+                        onDelete={deleteProject}
+                        onUpdate={updateProject}
+                    />
                 ))}
             </ul>
         </div>
