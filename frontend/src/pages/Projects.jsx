@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { api } from '../services/api';
+import api from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
-import { create } from 'axios';
 
 function Projects() {
     const [projects, setProjects] = useState([]);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [error, setError] = useState('');
-    const { token } = useAuth();
-    const navigate = useNavigate();
 
     useEffect(() => {
         fetchProjects();
@@ -37,8 +33,8 @@ function Projects() {
         }
     };
 
-    const updateProject = async (id, name) => {
-        await api.put(`/projects/${id}`, { name: "Новое имя", description });
+    const updateProject = async (id, data) => {
+        await api.put(`/projects/${id}`, data);
         fetchProjects();
     };
 
@@ -67,15 +63,12 @@ function Projects() {
                 />
 
                 <div>
-                    <button
-                        type="submit"
-                        value="Создать"
-                    />
+                    <button type="submit">Создать</button>
                 </div>
             </form>
 
             <ul>
-                {projects.map(project => {
+                {projects.map(project => (
                     <div key={project.id}>
                         <span>{project.name}</span>
 
@@ -87,7 +80,7 @@ function Projects() {
                             Изменить
                         </button>
                     </div>
-                })}
+                ))}
             </ul>
         </div>
     );
