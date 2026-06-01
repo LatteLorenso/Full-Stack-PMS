@@ -4,9 +4,10 @@ import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { create } from 'axios';
 
-function Register() {
+function Projects() {
     const [projects, setProjects] = useState([]);
     const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
     const [error, setError] = useState('');
     const { token } = useAuth();
     const navigate = useNavigate();
@@ -27,8 +28,9 @@ function Register() {
     const createProject = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/projects', { name });
+            await api.post('/projects', { name, description });
             setName('');
+            setDescription('');
             fetchProjects();
         } catch (err) {
             setError('Ошибка создания проекта');
@@ -36,12 +38,12 @@ function Register() {
     };
 
     const updateProject = async (id, name) => {
-        await api.post(`/projects/${id}`, { name });
+        await api.put(`/projects/${id}`, { name: "Новое имя", description });
         fetchProjects();
     };
 
     const deleteProject = async (id) => {
-        await api.post(`/projects/${id}`);
+        await api.delete(`/projects/${id}`);
         fetchProjects();
     };
 
@@ -54,8 +56,14 @@ function Register() {
             <form onSubmit={createProject}>
                 <input
                     value={name}
-                    onChange={(e) => setName(e.target.name)}
+                    onChange={(e) => setName(e.target.value)}
                     placeholder="Название проекта"
+                />
+
+                <input
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Описание"
                 />
 
                 <div>
@@ -67,7 +75,7 @@ function Register() {
             </form>
 
             <ul>
-                {projects.map((project) => {
+                {projects.map(project => {
                     <div key={project.id}>
                         <span>{project.name}</span>
 
@@ -75,7 +83,7 @@ function Register() {
                             Удалить
                         </button>
 
-                        <button onClick={() => updateProject(project.id, "Новое имя")}>
+                        <button onClick={() => updateProject(project.id)}>
                             Изменить
                         </button>
                     </div>

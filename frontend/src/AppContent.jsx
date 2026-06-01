@@ -3,13 +3,17 @@ import { Route, Routes } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 
 import Navbar from './components/Navbar';
-import PrivateRoute from './components/PrivateRoute';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import Tasks from './pages/Tasks';
+
+const PrivateRoute = ({ children }) => {
+    const { token } = useAuth();
+    return token ? children : <Navigate to="/login" />;
+};
 
 function AppContent() {
     const { token } = useAuth;
