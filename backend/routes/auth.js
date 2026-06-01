@@ -18,8 +18,8 @@ const registerRules = [
 ];
 
 const loginRules = [
-    body('username').isEmail().withMessage('Некорректный логин').normalizeEmail(),
-    body('password').notEmpty().withMessage('Пароль обязателен')
+    body('username').notEmpty().withMessage('Некорректный логин: Проверьте правильность ввода имени'),
+    body('password').notEmpty().withMessage('Пароль обязателен: Проверьте правильность ввода пароля')
 ];
 
 // API Эндпоинт регистрации
