@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { create } from 'axios';
@@ -13,7 +12,6 @@ function Tasks({ projectId }) {
     const [dueDate, setDueDate] = useState('');
     const [error, setError] = useState('');
     const { token } = useAuth();
-    const navigate = useNavigate();
 
     useEffect(() => {
         fetchTasks();
