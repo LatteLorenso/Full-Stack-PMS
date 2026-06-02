@@ -18,7 +18,8 @@ function Projects() {
     const fetchProjects = async () => {
         try {
             const res = await api.get('/projects');
-            setProjects(Array.isArray(res.data.projects) ? res.data.projects : []);
+            const data = Array.isArray(res.data.projects) ? res.data.projects : [];
+            setProjects(data);
         } catch (err) {
             setError('Ошибка загрузки проектов');
         }
@@ -47,6 +48,7 @@ function Projects() {
     };
 
     const deleteProject = async (id) => {
+        if (!window.confirm('Удалить проект?')) return;
         try {
             await api.delete(`/projects/${id}`);
             fetchProjects();
@@ -61,41 +63,44 @@ function Projects() {
 
             {error && <p>{error}</p>}
 
-            <form onSubmit={createProject} class="create-project-form">
-                <input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Название проекта"
-                />
+            <section class="container-form">
+                <form onSubmit={createProject} class="create-project-form">
+                    <input
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Название"
+                    />
+    
+                    <input
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Описание"
+                    />
+                    
+                    <button type="submit">Создать</button>
+                </form>
+            </section>
 
-                <input
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Описание"
-                />
-                
-                <button type="submit">Создать</button>
-            </form>
-
-            <div className="projects-grid">
+            <div class="projects-list">
                 {projects.map(project => (
-                    <div key={project.id} className="project-card">
-                        <div className="card-header">
-                            <h2>{project.name}</h2>
-                            <span className="badge">{project.owner_id === user?.id ? 'Владелец' : 'Участник'}</span>
-                        </div>
+                    <div key={project.id}>
+                        <section class="info">
+                            <h3>{project.name}</h3>
+                            <p>{project.description}</p>
+                        </section>
                         
-                        <p className="card-desc">{project.description || 'Нет описания'}</p>
+                        <section class="btns">
+                            <Link to={`/projects/${project.id}/tasks`} class="link">Задачи</Link>
+                            <button onClick={() => updateProject(project.id, { name: prompt('Новое имя:', project.name) })} class="btn-change">Изменить</button>
+                            <button onClick={() => deleteProject(project.id)} class="btn-del">Удалить</button>
+                        </section>
+
+                        {/* <ProjectDetail
+                            project={project}
+                            onDelete={deleteProject}
+                            onUpdate={updateProject}
+                        /> */}
                         
-                        <div className="card-actions">
-                            <Link to={`/projects/${project.id}/tasks`} className="btn-primary">Задачи</Link>
-                            
-                            <ProjectDetail
-                                project={project}
-                                onDelete={deleteProject}
-                                onUpdate={updateProject}
-                            />
-                        </div>
                     </div>
                 ))}
             </div>

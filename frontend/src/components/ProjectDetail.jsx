@@ -15,15 +15,18 @@ function ProjectDetail({ project, onDelete, onUpdate }) {
     };
 
     return (
-        <div style={{ border: '1px solid #ccc', padding: '0.625rem', marginBottom: '0.625rem' }}>
-            
+        <div class="projects-info">
             {!isEditing ? (
                 <>
-                    <h3>{project.name}</h3>
-                    <p>{project.description}</p>
+                    <section class="info">
+                        <h3>{project.name}</h3>
+                        <p>{project.description}</p>
+                    </section>
     
-                    <button onClick={() => setIsEditing(true)}>Изменить</button>
-                    <button onClick={() => onDelete(project.id)}>Удалить</button>
+                    <section class="btns">
+                        <button onClick={() => setIsEditing(true)} class="btn-change">Изменить</button>
+                        <button onClick={() => onDelete(project.id)} class="btn-del">Удалить</button>
+                    </section>
                 </>
             ) : (
                 <>

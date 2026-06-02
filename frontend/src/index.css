@@ -26,12 +26,6 @@
     --color-accent-guess: #00ffb3;     /* GUESS — вероятность */
     --color-accent-question: #ff4d4d;  /* ? — неопределенность */
 
-    /* АКЦЕНТЫ СТРАНИЦ */
-    --color-accent-home: #d1123b;
-    --color-accent-dashboard: #f88809;
-    --color-accent-projects: #12d152;
-    --color-accent-tasks: #125ed1;
-
     /* ===== КНОПКИ ===== */
     --color-btn-primary: #00eaff;      /* фон основной кнопки */
     --color-btn-primary-darker: #00eaffd8;
@@ -59,6 +53,13 @@
 
     /* ===== Отступы ===== */
     --header-height: 4.5rem;
+
+        /* АКЦЕНТЫ СТРАНИЦ */
+    --color-accent-home: #d1123b;
+    --color-accent-dashboard: #f88809;
+    --color-accent-projects: #12d152;
+    --color-accent-tasks: #125ed1;
+    --color-accent-info: #505050;
 }
 
 body
@@ -174,109 +175,121 @@ nav {
     color: white;
 }
 
+.container-form {
+    display: flex;
+    /* justify-content: center; */
+    background: white;
+    border: none;
+    border-radius: var(--radius-md);
+    width: 600px;
+    margin: 0 auto;
+    height: 50px;
+}
+
 .create-project-form {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-self: center;
+    align-items: center;
     gap: 10px;
     width: 368px;
     height: 47px;
-    margin-bottom: 15vh;
 }
 
 .create-project-form input {
-    padding: 12px 14px;
-    background: white;
+    padding: 8px 8px;
+    background: #c7c7c7;
     border: 1px solid var(--color-border-soft);
     color: black;
-    border-radius: var(--radius-sm);
-    font-size: 18px;
-    font-weight: 400;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
 }
 
 .create-project-form button {
-    padding: 10px 14px;
+    padding: 8px 15px;
     background: var(--color-accent-projects);
     letter-spacing: 0.5px;
-    font-size: 18px;
+    font-size: 1rem;
     font-weight: 600;
     font-family: var(--code-font);
     text-transform: uppercase;
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     cursor: pointer;
     color: var(--color-text-main);
     transition: color 0.3s ease, background 0.3s ease;
 }
 
-.create-project-form button:hover { color: grey; background: white; }
+.create-project-form button:hover { color: #3b3b3b; background: white; }
 
-.projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Адаптивная сетка */
-    gap: 20px;
-    padding: 20px;
-}
-
-.project-card {
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    transition: transform 0.2s, box-shadow 0.2s;
+.projects-list {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    flex-direction: row;
+    background-color: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    border: 2px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    width: 300px;
 }
 
-.project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-}
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.projects-list .link {
+    display: inline-block;
+    padding: 10px 12px;
+    background: var(--color-accent-projects);
+    border: none;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    text-align: center;
     margin-bottom: 10px;
 }
 
-.card-header h2 {
+.projects-info {
+    margin: 20px;
+    width: 250px;
+    height: auto;
+
+}
+
+.projects-info .info {
+}
+
+.projects-info h3 {
+    font-size: 1.5rem;
+    color: #d6d6d6;
     margin: 0;
-    font-size: 1.2rem;
-    color: #333;
 }
 
-.badge {
-    background: #e3f2fd;
-    color: #1976d2;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: bold;
-}
-
-.card-desc {
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-    flex-grow: 1; /* Чтобы кнопки всегда были внизу */
-}
-
-.btn-primary {
-    display: inline-block;
-    background: #007bff;
+.projects-info p {
+    font-size: 1rem;
     color: white;
-    text-decoration: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: 500;
-    transition: background 0.2s;
 }
 
-.btn-primary:hover {
-    background: #0056b3;
+.projects-info .btns {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
 }
+
+.projects-info .btn-change, .btn-del {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 10px 8px;
+    border: none;
+    border-radius: var(--radius-md);
+    color: white;
+    background: var(--color-accent-projects);
+    cursor: pointer;
+    transition: color 0.3s ease, background 0.3s ease;
+}
+
+.btn-del {
+    background: var(--color-accent-home);
+}
+
+.btn-change:hover, .btn-del:hover { color: #d3d3d3; background: var(--color-bg-glass) }
 
 /* Задачи */
 /* .container-task {
