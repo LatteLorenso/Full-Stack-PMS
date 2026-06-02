@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import ProjectDetail from '../components/ProjectDetail';
 
 function Projects() {
+    const { user } = useAuth();
     const [projects, setProjects] = useState([]);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -60,7 +61,7 @@ function Projects() {
 
             {error && <p>{error}</p>}
 
-            <form onSubmit={createProject}>
+            <form onSubmit={createProject} class="create-project-form">
                 <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -72,22 +73,29 @@ function Projects() {
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Описание"
                 />
-
-                <div>
-                    <button type="submit">Создать</button>
-                </div>
+                
+                <button type="submit">Создать</button>
             </form>
 
-            <div class="projects-list">
+            <div className="projects-grid">
                 {projects.map(project => (
-                    <div key={project.id} style={{  }}>
-                        <Link to={`/projects/${project.id}/tasks`}>Открыть задачи этого проекта</Link>
-
-                        <ProjectDetail
-                            project={project}
-                            onDelete={deleteProject}
-                            onUpdate={updateProject}
-                        />
+                    <div key={project.id} className="project-card">
+                        <div className="card-header">
+                            <h2>{project.name}</h2>
+                            <span className="badge">{project.owner_id === user?.id ? 'Владелец' : 'Участник'}</span>
+                        </div>
+                        
+                        <p className="card-desc">{project.description || 'Нет описания'}</p>
+                        
+                        <div className="card-actions">
+                            <Link to={`/projects/${project.id}/tasks`} className="btn-primary">Задачи</Link>
+                            
+                            <ProjectDetail
+                                project={project}
+                                onDelete={deleteProject}
+                                onUpdate={updateProject}
+                            />
+                        </div>
                     </div>
                 ))}
             </div>
