@@ -67,7 +67,7 @@ router.post('/', authenticate, async (req, res) => {
 
 // API Эндпоинт PUT update task
 router.put('/:id', authenticate, async (req, res) => {
-    taskId = req.params.id;
+    const taskId = req.params.id;
     const { title, description, status, assigned_to, due_date } = req.body;
     const db = getDb();
 
@@ -89,7 +89,7 @@ router.put('/:id', authenticate, async (req, res) => {
     await db.query(
         `UPDATE tasks t SET title = COALESCE(?, title), description = COALESCE(?, description),
         status = COALESCE(?, status), assigned_to = ?, due_date = ? WHERE id = ?`,
-        [title || t.title, description || '', status || 'todo', assigned_to, due_date, taskId]
+        [title || task.title, description || '', status || 'todo', assigned_to, due_date, taskId]
     );
     res.json({ message: 'Задача обновлена' });
 });

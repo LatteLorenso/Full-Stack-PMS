@@ -10,7 +10,7 @@ router.get('/', authenticate, async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
     const db = getDb();
-    const { userId, role } = req.user;
+    const { id: userId, role } = req.user;
 
     const conditions = role !== 'admin' ? ['(pm.user_Id = ? OR p.owner_id = ?)'] : [];
     const params = role !== 'admin' ? [userId, userId] : [];
@@ -21,7 +21,7 @@ router.get('/', authenticate, async (req, res) => {
     const [rows] = await db.query(
         `SELECT p.*, u.username as owner_name FROM projects p
         JOIN users u ON p.owner_id = u.id ${join} ${where}
-        ORDER BY p.created_at DESK, p.id DESC LIMIT ?`,
+        ORDER BY p.created_at DESC, p.id DESC LIMIT ?`,
         [...params, limit + 1]
     );
 

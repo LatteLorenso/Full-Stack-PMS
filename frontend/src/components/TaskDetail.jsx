@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function TaskDetail({ task, onDelete, onUpdate }) {
-    const [isEditing, setIsEditing] = useState(false);
+    if (!task) return null;
     
     const [title, setTitle] = useState(task.title);
     const [description, setDescription] = useState(task.description);
     const [status, setStatus] = useState(task.status);
     const [assignedTo, setAssignedTo] = useState(task.assigned_to);
     const [dueDate, setDueDate] = useState(task.due_date);
+    const [isEditing, setIsEditing] = useState(false);
+
+    useEffect(() => {
+        setTitle(task.title);
+        setDescription(task.description);
+        setStatus(task.status);
+        setAssignedTo(task.assigned_to || '');
+        setDueDate(task.due_date || '');
+    }, [task]);
 
     const handleUpdate = () => {
         onUpdate(task.id, {
@@ -17,7 +26,6 @@ function TaskDetail({ task, onDelete, onUpdate }) {
             assigned_to: assignedTo,
             due_date: dueDate
         });
-
         setIsEditing(false);
     };
 
@@ -26,7 +34,7 @@ function TaskDetail({ task, onDelete, onUpdate }) {
 
             {!isEditing ? (
                 <>
-                    <h3>{task.name}</h3>
+                    <h3>{task.title}</h3>
                     <p>{task.description}</p>
 
                     <p>Status: {task.status}</p>
@@ -40,7 +48,7 @@ function TaskDetail({ task, onDelete, onUpdate }) {
                 <>
                     <input
                         value={title}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e) => setTitle(e.target.value)}
                     />
     
                     <input

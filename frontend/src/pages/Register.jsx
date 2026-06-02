@@ -7,8 +7,12 @@ function Register() {
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
     const [error, setError] = useState('');
-    const { register } = useAuth();
+    const { register, token } = useAuth();
     const navigate = useNavigate();
+
+    if (token) {
+        return <Link to='/home' replace />
+    }
 
     const handleSubmit = async (e) => {
       e.preventDefault();

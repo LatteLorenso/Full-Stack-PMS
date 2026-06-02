@@ -3,8 +3,11 @@ import { Route, Routes, Navigate, Link } from 'react-router-dom';
 
 function Home() {
     return (
-        <div>
-            <h1 style={{ fontSize: "1.25rem" }}>Project Management App</h1>
+        <div class="container-hero">
+            <section class="section-hero-text">
+                <h1 class="home-text">Project Management App</h1>
+                <p>Управляй своими проектами</p>
+            </section>
         </div>
     );
 }

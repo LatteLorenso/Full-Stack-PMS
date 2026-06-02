@@ -6,8 +6,12 @@ function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { login } = useAuth();
+    const { login, token } = useAuth();
     const navigate = useNavigate();
+
+    if (token) {
+        return <Link to='/home' replace />
+    }
 
     const handleSubmit = async (e) => {
       e.preventDefault();

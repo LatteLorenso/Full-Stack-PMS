@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import ProjectDetail from '../components/ProjectDetail';
@@ -16,7 +17,7 @@ function Projects() {
     const fetchProjects = async () => {
         try {
             const res = await api.get('/projects');
-            setProjects(res.data);
+            setProjects(Array.isArray(res.data.projects) ? res.data.projects : []);
         } catch (err) {
             setError('Ошибка загрузки проектов');
         }
@@ -35,17 +36,26 @@ function Projects() {
     };
 
     const updateProject = async (id, data) => {
-        await api.put(`/projects/${id}`, data);
-        fetchProjects();
+        try{
+            await api.put(`/projects/${id}`, data);
+            fetchProjects();
+        } catch (err) {
+            setError('Ошибка обновления проекта');
+        }
+
     };
 
     const deleteProject = async (id) => {
-        await api.delete(`/projects/${id}`);
-        fetchProjects();
+        try {
+            await api.delete(`/projects/${id}`);
+            fetchProjects();
+        } catch (err) {
+            setError('Ошибка удаления проекта');
+        }
     };
 
     return (
-        <div>
+        <div class="container-project">
             <h1>Проекты</h1>
 
             {error && <p>{error}</p>}
@@ -68,16 +78,19 @@ function Projects() {
                 </div>
             </form>
 
-            <ul>
+            <div class="projects-list">
                 {projects.map(project => (
-                    <ProjectDetail
-                        key={project.id}
-                        project={project}
-                        onDelete={deleteProject}
-                        onUpdate={updateProject}
-                    />
+                    <div key={project.id} style={{  }}>
+                        <Link to={`/projects/${project.id}/tasks`}>Открыть задачи этого проекта</Link>
+
+                        <ProjectDetail
+                            project={project}
+                            onDelete={deleteProject}
+                            onUpdate={updateProject}
+                        />
+                    </div>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 }

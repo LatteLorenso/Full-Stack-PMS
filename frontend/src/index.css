@@ -58,9 +58,118 @@
 body
 {
     font-family: var(--body-font);
-    background-color: #dfdfdf;
+    background-color: var(--color-bg-header);
     color: var(--color-text-main);
     line-height: 1.6;
     overflow-x: hidden;
-    cursor: none;
 }
+
+nav {
+    position: sticky;
+    top: 0;
+    padding: 0.625rem;
+    color: white;
+    background-color: var(--color-bg-header);
+    backdrop-filter: blur(20px);
+    border-radius: 10px;
+}
+
+.container-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navLinks {
+    display: flex;
+    gap: 0.625rem;
+    font-family: var(--body-font);
+    font-weight: 600;
+}
+
+.links-home,
+.links-dashboard,
+.links-projects,
+.links-tasks {
+    text-decoration: none;
+    color: white;
+    border-radius: 4px;
+    padding: 8px 12px;
+    transition: background-color 0.3 ease;
+}
+
+.links-home:hover { background-color: #d1123b; }
+
+.links-dashboard:hover { background-color: #f88809; }
+
+.links-projects:hover { background-color: #12d152; }
+
+.links-tasks:hover { background-color: #125ed1; }
+
+.links:hover { background-color: var(--color-accent-question); }
+
+.container-user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    font-family: var(--code-font);
+    font-weight: 500;
+}
+
+.btn-logout {
+    border: none;
+    border-radius: 4px;
+    color: white;
+    background-color: black;
+    font-size: 1rem;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-logout:hover { background-color: white; color: black; }
+
+/* Основная страница Home */
+.container-hero {
+    margin-top: 50px;
+}
+
+/* .section-hero-text {
+} */
+
+.section-hero-text h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.6;
+    margin: 10px;
+}
+
+.section-hero-text p {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.6;
+    margin: 0;
+    font-family: var(--code-font);
+}
+
+/* Проекты */
+/* .container-project {
+    
+} */
+
+/* .projects-list {
+
+} */
+
+
+/* Задачи */
+/* .container-task {
+    
+} */
+
+/* .tasks-list {
+    
+} */
