@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
-import { useAuth } from '../contexts/AuthContext';
-import { useParams } from 'react-router-dom';
-import TaskDetail from '../components/TaskDetail';
+import { useParams, Link } from 'react-router-dom';
+import '../Tasks.css';
 
 function Tasks() {
     const { id } = useParams();
     const [tasks, setTasks] = useState([]);
+    
+    // Состояние для формы создания
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState('todo');
     const [assignedTo, setAssignedTo] = useState('');
     const [dueDate, setDueDate] = useState('');
+    
     const [error, setError] = useState('');
-    const { token } = useAuth();
+    const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
         fetchTasks();
@@ -21,13 +23,8 @@ function Tasks() {
 
     const fetchTasks = async () => {
         try {
-            const res = await api.get('/tasks', {
-                params: {
-                    project_id: id
-                }
-            });
+            const res = await api.get('/tasks', { params: { project_id: id } });
             setTasks(res.data);
-            console.log(res.data);
         } catch (err) {
             setError('Ошибка загрузки задач');
         }
@@ -36,99 +33,158 @@ function Tasks() {
     const createTask = async (e) => {
         e.preventDefault();
         if (!id) return;
-
         try {
-            const res = await api.post('/tasks', { title, description, status, project_id: id, assigned_to: assignedTo || null, due_date: dueDate || null });
-
-            setTasks(prev => [...prev, res.data]);
-
-            setTitle('');
-            setDescription('');
-            setAssignedTo('');
-            setStatus('todo');
-            setDueDate('');
-
+            await api.post('/tasks', { 
+                title, description, status, 
+                project_id: id, 
+                assigned_to: assignedTo || null, 
+                due_date: dueDate || null 
+            });
+            setTitle(''); setDescription(''); setAssignedTo(''); setStatus('todo'); setDueDate('');
+            setShowForm(false);
             fetchTasks();
         } catch (err) {
             setError('Ошибка создания задачи');
         }
     };
 
-    const updateTask = async (id, newStatus) => {
+    const updateTask = async (taskId, updatedData) => {
         try {
-            await api.put(`/tasks/${id}`, { status: newStatus });
-
-            setTasks(prev =>
-                prev.map(task =>
-                    task.id === id ? { ...task, status: newStatus } : task
-                )
-            );
+            await api.put(`/tasks/${taskId}`, updatedData);
+            fetchTasks();
         } catch (err) {
             setError('Ошибка обновления задачи');
         }
     };
 
-    const deleteTask = async (id) => {
+    const deleteTask = async (taskId) => {
+        if (!window.confirm('Удалить задачу?')) return;
         try {
-            await api.delete(`/tasks/${id}`);
-
-            setTasks(prev => prev.filter(task => task.id !== id));
+            await api.delete(`/tasks/${taskId}`);
+            fetchTasks();
         } catch (err) {
             setError('Ошибка удаления задачи');
         }
     };
 
     return (
-        <div class="container-task">
-            <h1>Tasks</h1>
-
-            {error && <p>{error}</p>}
-
-            <form onSubmit={createTask}>
-                <input
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder='Title'
-                />
-
-                <input
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder='Description'
-                />
-
-                <input
-                    value={assignedTo}
-                    onChange={(e) => setAssignedTo(e.target.value)}
-                    placeholder='Assigned to'
-                />
-
-                <input
-                    type="date"
-                    value={dueDate}
-                    onChange={(e) => setDueDate(e.target.value)}
-                    placeholder='Description'
-                />
-
-                <select value={status} onChange={(e) => setStatus(e.target.value)}>
-                    <option value="todo">К выполнению</option>
-                    <option value="in_progress">В работе</option>
-                    <option value="done">Готово</option>
-                </select>
-
-                <button type='submit'>Create Task</button>
-            </form>
-
-            <section class="tasks-list">
-                {tasks.map(task => (
-                    <TaskDetail
-                        key={task.id}
-                        task={task}
-                        onDelete={deleteTask}
-                        onUpdate={updateTask}
-                    />
-                ))}
+        <div className="container-task">
+            <section className="header-page">
+                <Link to={`/projects`} className="back-link">← Назад к проекту</Link>
+                <h1>Задачи проекта</h1>
             </section>
+            
+            <hr className="divider" />
+            {error && <p className="error-msg">{error}</p>}
+
+            {!showForm && (
+                <button onClick={() => setShowForm(true)} className="btn-show-task-form">Создать новую задачу</button>
+            )}
+
+            {showForm && (
+                <div className="form-container">
+                    <form onSubmit={createTask}>
+                        <div className="form-row">
+                            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Название' required className={`${title ? 'has-value' : ''}`}/>
+                            <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder='Описание' className={`${description ? 'has-value' : ''}`}/>
+                            <select value={status} onChange={(e) => setStatus(e.target.value)} className={`${status ? 'has-value' : ''}`}>
+                                <option value="todo">К выполнению</option>
+                                <option value="in_progress">В работе</option>
+                                <option value="done">Готово</option>
+                            </select>
+                            <input value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} placeholder='ID исполнителя' className={`${assignedTo ? 'has-value' : ''}`}/>
+                            <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className={`${dueDate ? 'has-value' : ''}`}/>
+                        </div>
+                        <div className="form-actions">
+                            <button type='button' onClick={() => setShowForm(false)} className="btn-cancel">Отмена</button>
+                            <button type='submit' className="btn-save">Создать</button>
+                        </div>
+                    </form>
+                </div>
+            )}
+            <hr />
+
+            <section className="tasks-mine">
+                <div className="tasks-grid">
+                    {tasks.map(task => (
+                        <TaskItem 
+                            key={task.id} 
+                            task={task} 
+                            onDelete={deleteTask} 
+                            onUpdate={updateTask} 
+                        />
+                    ))}
+                </div>
+            </section>
+        </div>
+    );
+}
+
+// Внутренний компонент для одной карточки задачи
+function TaskItem({ task, onDelete, onUpdate }) {
+    const [isEditing, setIsEditing] = useState(false);
+    const [title, setTitle] = useState(task.title);
+    const [description, setDescription] = useState(task.description);
+    const [status, setStatus] = useState(task.status);
+    const [assignedTo, setAssignedTo] = useState(task.assigned_to || '');
+    const [dueDate, setDueDate] = useState(task.due_date ? task.due_date.split('T')[0] : '');
+
+    useEffect(() => {
+        setTitle(task.title);
+        setDescription(task.description);
+        setStatus(task.status);
+        setAssignedTo(task.assigned_to || '');
+        setDueDate(task.due_date ? task.due_date.split('T')[0] : '');
+    }, [task]);
+
+    const handleUpdate = () => {
+        onUpdate(task.id, { title, description, status, assigned_to: assignedTo, due_date: dueDate });
+        setIsEditing(false);
+    };
+
+    const formattedDate = task.due_date ? new Date(task.due_date).toLocaleDateString('ru-RU') : 'Не указана';
+
+    return (
+        <div className="task-card">
+            {!isEditing ? (
+                <>
+                    <div className="task-header">
+                        <section className="sec-badge">
+                            <span className={`status-badge ${task.status}`}>
+                                {task.status === 'todo' && 'К выполнению'}
+                                {task.status === 'in_progress' && 'В работе'}
+                                {task.status === 'done' && 'Готово'}
+                            </span>
+                        </section>
+                        <h3>{task.title}</h3>
+                    </div>
+                    <p className="task-desc">{task.description || 'Нет описания'}</p>
+                    <div className="task-meta">
+                        <div className="meta-item"><span>Исполнитель:</span> <strong>{task.assigned_name || 'Не назначен'}</strong></div>
+                        <div className="meta-item"><span>Срок:</span> <strong>{formattedDate}</strong></div>
+                    </div>
+                    <div className="task-actions">
+                        <button onClick={() => setIsEditing(true)} className="btn-edit">Изменить</button>
+                        <button onClick={() => onDelete(task.id)} className="btn-del">Удалить</button>
+                    </div>
+                </>
+            ) : (
+                <div className="edit-mode">
+                    <input className="edit-input" value={title} onChange={(e) => setTitle(e.target.value)} />
+                    <textarea className="edit-input" value={description} onChange={(e) => setDescription(e.target.value)} rows="2" />
+                    <select className="edit-input" value={status} onChange={(e) => setStatus(e.target.value)}>
+                        <option value="todo">К выполнению</option>
+                        <option value="in_progress">В работе</option>
+                        <option value="done">Готово</option>
+                    </select>
+                    <input className="edit-input" value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} placeholder="ID исполнителя" />
+                    <input className="edit-input" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+                    <div className="task-actions">
+                        <button onClick={handleUpdate} className="btn-save">Сохранить</button>
+                        <button onClick={() => setIsEditing(false)} className="btn-cancel">Отмена</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

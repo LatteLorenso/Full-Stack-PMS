@@ -57,16 +57,22 @@
         /* АКЦЕНТЫ СТРАНИЦ */
     --color-accent-home: #d1123b;
     --color-accent-dashboard: #f88809;
-    --color-accent-projects: #12d152;
+    --color-accent-projects: #23b879;
+    --border-color-accent-projects: #1b8f5e;
     --color-accent-tasks: #125ed1;
+    --border-color-accent-tasks: #1052b4;
     --color-accent-info: #505050;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body
 {
     font-family: var(--body-font);
-    background-color: var(--color-bg-header);
-    color: var(--color-text-main);
+    background: #eeeeee;
+    color: black;
     line-height: 1.6;
     letter-spacing: 0.5px;
     overflow-x: hidden;
@@ -167,110 +173,167 @@ nav {
 .container-project {
     display: flex;
     flex-direction: column;
+    margin: 20px 60px;
+}
+
+.header-page {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #aaa;
+    cursor: pointer;
+    margin-right: 20px;
+    font-size: 1.2rem;
+    text-transform: uppercase;
 }
 
 .container-project h1 {
-    font-size: 2.3rem;
+    font-size: 2rem;
     font-weight: 600;
-    color: white;
+    color: black;
+    margin: 0;
 }
+
+.container-project p {
+    color: #5c5c5c;
+    font-weight: 600;
+    margin: 0px 0 10px;
+}
+
+hr {
+    background: #888888;
+    height: 1px;
+    margin: 5px 0 30px;
+}
+
+.btn-show-form {
+    max-width: 240px;
+    font-size: 1rem;
+    padding: 12px 24px;
+    border: 2px solid var(--border-color-accent-projects);
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    background: var(--color-accent-projects);
+    transition: color 0.5s ease, background 0.3s ease;
+}
+
+.btn-show-form:hover { color: white; background: #0fb160; }
 
 .container-form {
     display: flex;
-    /* justify-content: center; */
-    background: white;
-    border: none;
-    border-radius: var(--radius-md);
-    width: 600px;
-    margin: 0 auto;
-    height: 50px;
+    justify-content: center;
+    margin-bottom: 15px;
 }
 
 .create-project-form {
     display: flex;
+    flex-direction: column;
+}
+
+.create-project-form .inputs {
+    display: flex;
     flex-direction: row;
-    justify-self: center;
-    align-items: center;
     gap: 10px;
-    width: 368px;
-    height: 47px;
+    width: 100%;
+}
+
+.create-project-form .btns {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
 }
 
 .create-project-form input {
-    padding: 10px;
-    background: #c7c7c7;
+    padding: 12px;
+    background: white;
     color: black;
     border: none;
-    border-radius: var(--radius-md);
-    font-size: 0.875rem;
+    border-radius: 6px;
+    font-size: 1rem;
 }
 
-.create-project-form button {
-    padding: 10px 20px;
+.btn-save, .btn-cancel {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.btn-save { background: var(--color-accent-projects); color: white; width: 150px; }
+.btn-cancel { background: var(--color-accent-info); color: white; }
+
+/* .create-project-form button {
+    padding: 7px 20px;
     background: var(--color-accent-projects);
     letter-spacing: 0.5px;
     font-size: 1rem;
     font-weight: 600;
     font-family: var(--code-font);
     text-transform: uppercase;
-    border: none;
+    border: 2px solid var(--border-color-accent-projects);
     border-radius: var(--radius-md);
     cursor: pointer;
-    color: var(--color-text-main);
+    color: white;
     transition: color 0.3s ease, background 0.3s ease;
-}
+} */
 
-.create-project-form button:hover { color: #3b3b3b; background: white; }
-
-/* Основной контейнер страницы */
-.container-project {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    color: white; /* Если фон темный */
-}
+/* .create-project-form button:hover { color: white; background: #0fb160; } */
 
 /* Сетка для карточек проектов */
+.projects-mine {
+    display: flex;
+    flex-direction: column;
+}
+
+.projects-mine h3 {
+    margin-top: 15px;
+    margin-bottom: 0;
+    color: #888888;
+}
+
 .projects-grid {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     gap: 20px;
     margin-top: 20px;
 }
 
-/* Карточка проекта (твой .projects-list теперь .project-card) */
 .project-card {
     display: flex;
     flex-direction: column;
-    background-color: rgba(255, 255, 255, 0.05); /* Чуть светлее для контраста */
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--color-border-strong, rgba(255,255,255,0.1));
-    border-radius: var(--radius-md, 12px);
-    width: 300px;
-    padding: 20px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    border-color: var(--color-accent-projects, #007bff);
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid #888888;
+    border-radius: 4px;
+    width: 100%;
+    height: 300px;
+    padding: 15px 20px;
 }
 
 /* Информация внутри карточки */
 .project-info h3 {
-    font-size: 1.4rem;
-    color: #d6d6d6;
-    margin: 0 0 10px 0;
+    font-size: 1.5rem;
+    color: black;
+    margin: 0 0 15px 0;
     word-break: break-word;
 }
 
 .project-info p {
-    font-size: 0.95rem;
-    color: #b0b0b0;
-    margin-bottom: 20px;
-    line-height: 1.4;
-    flex-grow: 1; /* Чтобы кнопки всегда были внизу */
+    font-size: 0.9rem;
+    color: var(--color-accent-info);
+    margin-bottom: 15px;
+    line-height: 1.5;
+    flex-grow: 1;
 }
 
 /* Кнопки действий */
@@ -282,24 +345,26 @@ nav {
 }
 
 .link-tasks {
-    display: block;
+    flex: 1;
     padding: 10px;
     background: var(--color-accent-projects, #4a90e2);
-    border-radius: var(--radius-md, 8px);
+    border: 2px solid var(--border-color-accent-projects);
+    border-radius: 4px;
     text-decoration: none;
     color: white;
     font-weight: 600;
     text-align: center;
-    transition: opacity 0.2s;
+    transition: background 0.3s ease;
 }
 
 .link-tasks:hover {
-    opacity: 0.9;
+    background: #0fb188;
 }
 
 .project-settings {
     display: flex;
-    gap: 8px;
+    flex-direction: row;
+    gap: 10px;
 }
 
 .btn-change, .btn-del {
@@ -307,18 +372,18 @@ nav {
     font-size: 0.9rem;
     padding: 8px;
     border: none;
-    border-radius: var(--radius-md, 8px);
+    border-radius: 4px;
     color: white;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.3s;
 }
 
 .btn-change {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--color-accent-tasks);
 }
 
 .btn-change:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: #0f50b1;
 }
 
 .btn-del {
@@ -326,7 +391,7 @@ nav {
 }
 
 .btn-del:hover {
-    background: #c0392b;
+    background: #3b3b3b;
 }
 
 /* Поля ввода при редактировании */
@@ -339,12 +404,3 @@ nav {
     border-radius: 6px;
     color: white;
 }
-
-/* Задачи */
-/* .container-task {
-    
-} */
-
-/* .tasks-list {
-    
-} */
