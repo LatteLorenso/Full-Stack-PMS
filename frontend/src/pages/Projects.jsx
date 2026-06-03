@@ -28,7 +28,7 @@ function Projects() {
     const createProject = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/projects', { name, description, member_ids: members });
+            await api.post('/projects', { name, description });
             setName('');
             setDescription('');
             setShowForm(false);
@@ -124,19 +124,36 @@ function ProjectCard({ project, onDelete, onUpdate }) {
         <div className="project-card">
             {!isEditing ? (
                 <>
-                    <div className="project-info">
+                    <button onClick={() => onDelete(project.id)} className="btn-del">×</button>
+                    <section className="project-info">
                         <h3>{project.name}</h3>
                         <p>{project.description || 'Нет описания'}</p>
-                    </div>
-                    
-                    <div className="project-actions">
+                    </section>
+
+                    <section className="members-meta">
+                        <div className="meta-item">
+                            <span>Основатель:</span>
+                            <strong>{project.owner_name || "Неизвестно"}</strong>
+                        </div>
+                        {project.member_names && (
+                            <div className="meta-item">
+                                <span>Команда:</span>
+                                <strong>{project.member_names}</strong>
+                            </div>
+                        )}
+                    </section>
+
+                    <section className="project-actions">
                         <Link to={`/projects/${project.id}/tasks`} className="link-tasks">Задачи проекта</Link>
-                        
+                    </section>
+
+                    <hr />
+
+                    <section className="project-actions">
                         <div className="project-settings">
                             <button onClick={() => setIsEditing(true)} className="btn-change">Изменить</button>
-                            <button onClick={() => onDelete(project.id)} className="btn-del">Удалить</button>
                         </div>
-                    </div>
+                    </section>
                 </>
             ) : (
                 <div className="edit-mode">
