@@ -149,11 +149,10 @@ function ProjectCard({ project, onDelete, onUpdate }) {
 
                     <hr />
 
-                    <section className="project-actions">
-                        <div className="project-settings">
-                            <button onClick={() => setIsEditing(true)} className="btn-change">Изменить</button>
-                        </div>
-                    </section>
+                    <div className="project-settings">
+                        <button onClick={() => setIsEditing(true)} className="btn-add">Добавить участников</button>
+                        <button onClick={() => setIsEditing(true)} className="btn-change">Изменить</button>
+                    </div>
                 </>
             ) : (
                 <div className="edit-mode">
