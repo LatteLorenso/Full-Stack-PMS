@@ -8,7 +8,6 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
-import ProjectDetail from './components/ProjectDetail';
 import Tasks from './pages/Tasks';
 import TaskDetail from './components/TaskDetail';
 

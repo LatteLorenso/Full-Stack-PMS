@@ -197,16 +197,16 @@ nav {
 }
 
 .create-project-form input {
-    padding: 8px 8px;
+    padding: 10px;
     background: #c7c7c7;
-    border: 1px solid var(--color-border-soft);
     color: black;
+    border: none;
     border-radius: var(--radius-md);
     font-size: 0.875rem;
 }
 
 .create-project-form button {
-    padding: 8px 15px;
+    padding: 10px 20px;
     background: var(--color-accent-projects);
     letter-spacing: 0.5px;
     font-size: 1rem;
@@ -222,74 +222,123 @@ nav {
 
 .create-project-form button:hover { color: #3b3b3b; background: white; }
 
-.projects-list {
-    display: flex;
-    flex-direction: row;
-    background-color: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(20px);
-    border: 2px solid var(--color-border-strong);
-    border-radius: var(--radius-md);
-    width: 300px;
+/* Основной контейнер страницы */
+.container-project {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    color: white; /* Если фон темный */
 }
 
-.projects-list .link {
-    display: inline-block;
-    padding: 10px 12px;
-    background: var(--color-accent-projects);
-    border: none;
-    border-radius: var(--radius-md);
+/* Сетка для карточек проектов */
+.projects-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Карточка проекта (твой .projects-list теперь .project-card) */
+.project-card {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.05); /* Чуть светлее для контраста */
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border-strong, rgba(255,255,255,0.1));
+    border-radius: var(--radius-md, 12px);
+    width: 300px;
+    padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    border-color: var(--color-accent-projects, #007bff);
+}
+
+/* Информация внутри карточки */
+.project-info h3 {
+    font-size: 1.4rem;
+    color: #d6d6d6;
+    margin: 0 0 10px 0;
+    word-break: break-word;
+}
+
+.project-info p {
+    font-size: 0.95rem;
+    color: #b0b0b0;
+    margin-bottom: 20px;
+    line-height: 1.4;
+    flex-grow: 1; /* Чтобы кнопки всегда были внизу */
+}
+
+/* Кнопки действий */
+.project-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.link-tasks {
+    display: block;
+    padding: 10px;
+    background: var(--color-accent-projects, #4a90e2);
+    border-radius: var(--radius-md, 8px);
     text-decoration: none;
     color: white;
-    font-size: 1rem;
+    font-weight: 600;
     text-align: center;
-    margin-bottom: 10px;
+    transition: opacity 0.2s;
 }
 
-.projects-info {
-    margin: 20px;
-    width: 250px;
-    height: auto;
-
+.link-tasks:hover {
+    opacity: 0.9;
 }
 
-.projects-info .info {
-}
-
-.projects-info h3 {
-    font-size: 1.5rem;
-    color: #d6d6d6;
-    margin: 0;
-}
-
-.projects-info p {
-    font-size: 1rem;
-    color: white;
-}
-
-.projects-info .btns {
+.project-settings {
     display: flex;
-    flex-direction: row;
     gap: 8px;
 }
 
-.projects-info .btn-change, .btn-del {
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    padding: 10px 8px;
+.btn-change, .btn-del {
+    flex: 1;
+    font-size: 0.9rem;
+    padding: 8px;
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, 8px);
     color: white;
-    background: var(--color-accent-projects);
     cursor: pointer;
-    transition: color 0.3s ease, background 0.3s ease;
+    transition: background 0.2s;
+}
+
+.btn-change {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-change:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .btn-del {
-    background: var(--color-accent-home);
+    background: var(--color-accent-home, #e74c3c);
 }
 
-.btn-change:hover, .btn-del:hover { color: #d3d3d3; background: var(--color-bg-glass) }
+.btn-del:hover {
+    background: #c0392b;
+}
+
+/* Поля ввода при редактировании */
+.project-edit input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+}
 
 /* Задачи */
 /* .container-task {
