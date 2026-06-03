@@ -18,12 +18,19 @@ router.get('/', authenticate, async (req, res) => {
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
     const join = role !== 'admin' ? 'JOIN project_members pm ON p.id = pm.project_id' : '';
 
-    const [rows] = await db.query(
-        `SELECT p.*, u.username as owner_name FROM projects p
-        JOIN users u ON p.owner_id = u.id ${join} ${where}
-        ORDER BY p.created_at DESC, p.id DESC LIMIT ?`,
-        [...params, limit + 1]
-    );
+    const query =
+        `SELECT p.*, u.username as owner_name,
+        GROUP_CONCAT(DISTINCT u_mem.username SEPARATOR ', ') as member_names 
+        FROM projects p
+        JOIN users u ON p.owner_id = u.id
+        LEFT JOIN project_members pm_members ON p.id = pm_members.project_id
+        LEFT JOIN users u_mem ON pm_members.user_id = u_mem.id
+        ${join}
+        ${where}
+        GROUP BY p.id
+        ORDER BY p.created_at DESC, p.id DESC LIMIT ?`;
+
+    const [rows] = await db.query(query, [...params, limit + 1]);
 
     const hasMore = rows.length > limit;
     if (hasMore) rows.pop();
@@ -63,7 +70,7 @@ router.post('/', authenticate, async (req, res) => {
             for (const uid of membersIds) {
                 if (uid !== req.user.id) {
                     await connection.query(
-                        'INSERT INTO project_members (project_id, user_id) VALUES (?, ?)',
+                        'INSERT IGNORE INTO project_members (project_id, user_id) VALUES (?, ?)',
                         [projectId, uid]
                     )
                 }

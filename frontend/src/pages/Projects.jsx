@@ -8,7 +8,6 @@ function Projects() {
     const [projects, setProjects] = useState([]);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [members, setMembers] = useState('');
     const [error, setError] = useState('');
     const [showForm, setShowForm] = useState(false);
 
@@ -29,7 +28,7 @@ function Projects() {
     const createProject = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/projects', { name, description });
+            await api.post('/projects', { name, description, member_ids: members });
             setName('');
             setDescription('');
             setShowForm(false);
@@ -98,10 +97,10 @@ function Projects() {
                 <div className="projects-grid">
                     {projects.map(project => (
                         <ProjectCard 
-                            key={project.id} 
-                            project={project} 
-                            onDelete={deleteProject} 
-                            onUpdate={updateProject} 
+                            key={project.id}
+                            project={project}
+                            onDelete={deleteProject}
+                            onUpdate={updateProject}
                         />
                     ))}
                 </div>
