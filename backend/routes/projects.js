@@ -199,7 +199,8 @@ router.post('/:id/members', authenticate, async (req, res) => {
     res.json({ message: "Участник добавлен" });
 });
 
-router.delete('/:id/members', authenticate, async (req, res) => {
+router.delete('/:id/members/:userId', authenticate, async (req, res) => {
+    const db = getDb();
     const { id: projectId, userId } = req.params;
 
     if (req.user.role !== 'admin' && project.owner_id !== req.user.id) {

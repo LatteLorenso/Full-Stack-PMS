@@ -11,9 +11,10 @@ function Projects() {
     const [error, setError] = useState('');
     const [showForm, setShowForm] = useState(false);
 
-    // Стейт для модал. окна добавления участников
+    // Стейт для модал. окна добавления/удаления участников
     const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
     const [currentProjectId, setCurrentProjectId] = useState(null);
+    const [currentProjectData, setCurrentProjectData] = useState(null);
     const [allUsers, setAllUsers] = useState([]);
     const [selectedUserId, setSelectedUserId] = useState(null);
 
@@ -68,10 +69,14 @@ function Projects() {
         setCurrentProjectId(projectId);
         setIsMemberModalOpen(true);
         try {
-            const res = await api.get("/projects/users/all");
-            setAllUsers(res.data);
+            const usersRes = await api.get("/projects/users/all");
+            setAllUsers(usersRes.data);
+
+            const projectsRes = await api.get(`/projects/${projectId}`);
+            setCurrentProjectData(projectsRes.data);
         } catch (err) {
-            setError('Ошибка открытия модального окна и получения всех пользователей');
+            setError('Ошибка загрузки данных');
+            setIsMemberModalOpen(false);
         }
     };
     
@@ -94,11 +99,15 @@ function Projects() {
         }
     };
 
-    const handleRemoveMember = async () => {
-        if (!currentProjectId || !window.confirm("Удалить участника из проекта?")) return;
+    const handleRemoveMember = async (userId) => {
+        if (!currentProjectId || !userId || !window.confirm("Удалить участника из проекта?")) return;
 
         try {
             await api.delete(`/projects/${currentProjectId}/members/${userId}`);
+
+            const projectsRes = await api.get(`/projects/${currentProjectId}`);
+            setCurrentProjectData(projectsRes.data);
+
             fetchProjects();
         } catch (err) {
             setError('Ошибка удаления участника');
@@ -155,11 +164,13 @@ function Projects() {
                 </div>
 
                 <section className="projects-modal-add">
-                    {isMemberModalOpen && (
+                    {isMemberModalOpen && currentProjectData && (
                         <AddMemberModal
                             users={allUsers}
+                            projectMembers={currentProjectData.members}
+                            ownerId={currentProjectData.owner_id}
                             projectId={currentProjectId}
-                            onClose={() => setIsMemberModalOpen(false)}
+                            onClose={() => {setIsMemberModalOpen(false); setSelectedUserId(null);}}
                             selectedUserId={selectedUserId}
                             onSelect={handleSelectMember}
                             onAccept={handleAcceptMember}
@@ -242,39 +253,81 @@ function ProjectCard({ project, onDelete, onAddMember, onUpdate }) {
     );
 }
 
-function AddMemberModal({ users, projectId, onClose, selectedUserId, onSelect, onAccept, onRemove, currentUserId }) {
-    return (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <button onClick={onClose} className="btn-del">×</button>
-                <h3>Управление командой</h3>
+function AddMemberModal({ users, projectMembers, ownerId, onClose, selectedUserId, onSelect, onAccept, onRemove, currentUserId }) {
+    
+    // Получаем список ID тех, кто уже в проекте
+    const memberIds = projectMembers.map(m => m.id);
+    
+    const isCurrentMember = selectedUserId && memberIds.includes(selectedUserId);
 
-                <section className="modal-section">
-                    <h4>Добавить участника</h4>
+    const selectedUser = [...projectMembers, ...users].find(u => u.id === selectedUserId);
+    const isOwner = selectedUser?.isOwner;
+
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                    <h3>Команда проекта</h3>
+                    <button onClick={onClose} className="btn-del">×</button>
+                </div>
+                
+                {/* Секция 1: Текущие участники */}
+                <div className="modal-section">
+                    <h4>В проекте:</h4>
+                    <div className="user-list">
+                        {projectMembers.map(member => (
+                            
+                            <div key={member.id}
+                                className={`user-item current-member ${selectedUserId === member.id ? 'selected' : ''}`} onClick={() => onSelect(member.id)}>
+                                <div className="member-info">
+                                    <span>{member.username}</span>
+                                    {member.isOwner && <span className="owner-badge">admin</span>}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <hr className="modal-divider" />
+
+                {/* Секция 2: Добавить новых */}
+                <div className="modal-section">
+                    <h4>Добавить участника:</h4>
                     <section className="user-list">
                         {users.map(u => {
+                            // Если пользователь уже в проекте — не показываем его здесь
+                            if (memberIds.includes(u.id)) return null;
+                            
                             const isSelected = u.id === selectedUserId;
                             return (
-                                <div key={u.id} className={`user-item ${isSelected ? 'selected' : ''}`} onClick={() => onSelect(u.id)}>
+                                <div 
+                                    key={u.id} 
+                                    className={`user-item ${isSelected ? 'selected' : ''}`} 
+                                    onClick={() => onSelect(u.id)}
+                                >
                                     <span>{u.username}</span>
                                     <span className={`user-role ${u.role}`}>{u.role}</span>
                                 </div>
                             );
                         })}
                     </section>
-                    <button type="button" onClick={onAccept} className="btn-accept" disabled={!selectedUserId}>Добавить</button>
-                </section>
-
-                <hr />
-
-                <section className="modal-section">
-                    <h4>Текущая команда</h4>
-                    <CurrentMembersList
-                        projectId={projectId}
-                        onRemove={onRemove}
-                        currentUserId={currentUserId}
-                    />
-                </section>
+                    
+                    <button
+                        type="button"
+                        className={`btn-action ${isCurrentMember ? 'btn-remove' : 'btn-accept'}`}
+                        disabled={!selectedUserId || isOwner}
+                        onClick={() => {
+                            if (isCurrentMember) {
+                                onRemove(selectedUserId);
+                            } else {
+                                onAccept();
+                            }
+                        }}
+                    >
+                        {isCurrentMember ? "Удалить выбранного" : "Добавить выбранного"}
+                        
+                    </button>
+                </div>
             </div>
         </div>
     );

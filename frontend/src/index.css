@@ -273,23 +273,6 @@ hr {
 .btn-save { background: var(--color-accent-projects); color: white; width: 150px; }
 .btn-cancel { background: var(--color-accent-info); color: white; }
 
-/* .create-project-form button {
-    padding: 7px 20px;
-    background: var(--color-accent-projects);
-    letter-spacing: 0.5px;
-    font-size: 1rem;
-    font-weight: 600;
-    font-family: var(--code-font);
-    text-transform: uppercase;
-    border: 2px solid var(--border-color-accent-projects);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    color: white;
-    transition: color 0.3s ease, background 0.3s ease;
-} */
-
-/* .create-project-form button:hover { color: white; background: #0fb160; } */
-
 /* Сетка для карточек проектов */
 .projects-mine {
     display: flex;
@@ -491,7 +474,23 @@ hr {
     scrollbar-color: #555 #2a2a2a;
 }
 
-/* Элемент списка (один пользователь) */
+.user-item.current-member {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    background: #f1f1f1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.member-info {
+    display: flex;
+    justify-content: space-between;
+}
+
 .user-item {
     display: flex;
     justify-content: space-between;
@@ -512,7 +511,7 @@ hr {
     background: #d4d4d4;
 }
 
-.user-role {
+.user-role, .owner-badge {
     width: 65px;
     max-width: 90%;
     text-align: center;
@@ -528,14 +527,55 @@ hr {
     background-color: rgba(231, 76, 60, 0.2);
 }
 
-.user-role.admin {
+.owner-badge {
     color: #c90000;
     border: 1px solid var(--border-color-accent-home);
     background-color: rgba(231, 76, 60, 0.2);
 }
 
 /* Кнопка закрытия/сохранения */
-.btn-accept, .btn-cancel {
+/* Базовые стили для кнопки действия */
+.btn-action {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 15px;
+}
+
+/* Режим добавления (зеленый/синий) */
+.btn-action.btn-accept {
+    background: var(--color-accent-projects);
+    color: white;
+}
+.btn-action.btn-accept:hover:not(:disabled) {
+    background: var(--border-color-accent-projects);
+}
+
+/* Режим удаления (красный) */
+.btn-action.btn-remove {
+    background: var(--color-accent-home);
+    color: white;
+}
+.btn-action.btn-remove:hover:not(:disabled) {
+    background: var(--border-color-accent-home);
+}
+
+/* Состояние disabled */
+.btn-action:disabled {
+    opacity: 0.7;
+    cursor: default;
+    background: #797979;
+}
+
+.btn-action:disabled:hover {
+    background: #5c5c5c;
+}
+
+.btn-cancel {
     width: 100%;
     padding: 12px;
     color: white;
@@ -544,18 +584,6 @@ hr {
     cursor: pointer;
     font-weight: 600;
     transition: background 0.3s ease;
-}
-
-.btn-accept {
-    background: var(--color-accent-projects);
-}
-.btn-accept.disabled {
-    opacity: 0.5;
-    cursor: default;
-}
-
-.btn-accept:hover {
-    background: var(--border-color-accent-projects);
 }
 
 .btn-cancel {
