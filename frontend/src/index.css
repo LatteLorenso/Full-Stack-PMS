@@ -51,6 +51,7 @@
 
 * {
     box-sizing: border-box;
+    scroll-behavior: smooth;
 }
 
 body
@@ -150,3 +151,76 @@ nav {
     margin: 0;
     font-family: var(--code-font);
 }
+
+/* Стили для Projects & Tasks */
+
+/* Поля ввода (универсальные) */
+.edit-mode {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.edit-input.task, .edit-input.project {
+    width: 100%;
+    padding: 10px 12px;
+    background: white;
+    border: 1px solid var(--color-accent-info);
+    border-radius: 6px;
+    color: black;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.edit-input.task:focus {
+    border-color: var(--color-accent-tasks, #125ed1);
+}
+
+.edit-input.project:focus {
+    border-color: var(--color-accent-projects, #23b879);
+}
+
+/* Кнопки действий в карточке */
+.task-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-del {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    font-size: 2.8rem;
+    padding: 0;
+    background: none;
+    border: none;
+    color: var(--color-accent-home, #e74c3c);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.btn-del:hover {
+    color: #3b3b3b;
+}
+
+.btn-save, .btn-cancel {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.btn-save { background: var(--color-accent-projects); color: white; width: 600px; }
+.btn-cancel { background: var(--color-accent-info); color: white; }
+
+.btn-edit:hover { background: var(--border-color-accent-tasks); color: white; }
+.btn-save:hover { opacity: 0.8; }
+.btn-cancel:hover { opacity: 0.8; }

@@ -124,7 +124,17 @@ router.get('/:id', authenticate, async (req, res) => {
 
     const [ownerData] = await db.query('SELECT id, username, role FROM users WHERE id = ?', [project.owner_id]);
 
-    const fullTeam = [{ ...ownerData[0], isOwner: true }, ...members.map(m => ({ ...m, isOwner: false }))];
+    const teamMap = new Map();
+
+    members.forEach(m => {
+        teamMap.set(m.id, { ...m, isOwner: false });
+    });
+
+    if (ownerData.length > 0) {
+        teamMap.set(ownerData[0].id, { ...ownerData[0], isOwner: true });
+    }
+
+    const fullTeam = Array.from(teamMap.values());
 
     const [tasks] = await db.query(
         `SELECT t.*, u.username as assigned_name
@@ -166,6 +176,7 @@ router.put('/:id', authenticate, async (req, res) => {
 router.delete('/:id', authenticate, async (req, res) => {
     const projectId = req.params.id;
     const db = getDb();
+    
     const [projectRows] = await db.query(
         'SELECT * FROM projects WHERE id = ?', [projectId]
     );
@@ -191,6 +202,14 @@ router.post('/:id/members', authenticate, async (req, res) => {
     const { id: projectId } = req.params;
     const { user_id } = req.body;
 
+    const [projectRows] = await db.query(
+        'SELECT * FROM projects WHERE id = ?', [projectId]
+    );
+    if (projectRows.length === 0) {
+        return res.status(404).json({ error: "Проект не найден" });
+    }
+    const project = projectRows[0];
+
     if (req.user.role !== 'admin' && project.owner_id !== req.user.id) {
         return res.status(403).json({ error: "В разрешении отказано" });
     }
@@ -202,6 +221,14 @@ router.post('/:id/members', authenticate, async (req, res) => {
 router.delete('/:id/members/:userId', authenticate, async (req, res) => {
     const db = getDb();
     const { id: projectId, userId } = req.params;
+
+    const [projectRows] = await db.query(
+        'SELECT * FROM projects WHERE id = ?', [projectId]
+    );
+    if (projectRows.length === 0) {
+        return res.status(404).json({ error: "Проект не найден" });
+    }
+    const project = projectRows[0];
 
     if (req.user.role !== 'admin' && project.owner_id !== req.user.id) {
         return res.status(403).json({ error: "В разрешении отказано" });

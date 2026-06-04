@@ -92,7 +92,7 @@ function Tasks() {
                                 <option value="in_progress">В работе</option>
                                 <option value="done">Готово</option>
                             </select>
-                            <input value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} placeholder='ID исполнителя' className={`${assignedTo ? 'has-value' : ''}`}/>
+                            <input type="number" value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} placeholder='ID исполнителя' className={`${assignedTo ? 'has-value' : ''}`}/>
                             <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className={`${dueDate ? 'has-value' : ''}`}/>
                         </div>
                         <div className="form-actions">
@@ -170,18 +170,18 @@ function TaskItem({ task, onDelete, onUpdate }) {
                 </>
             ) : (
                 <div className="edit-mode">
-                    <input className="edit-input" value={title} onChange={(e) => setTitle(e.target.value)} />
-                    <textarea className="edit-input" value={description} onChange={(e) => setDescription(e.target.value)} rows="2" />
-                    <select className="edit-input" value={status} onChange={(e) => setStatus(e.target.value)}>
+                    <input className="edit-input task" value={title} onChange={(e) => setTitle(e.target.value)} />
+                    <input className="edit-input task" value={description} onChange={(e) => setDescription(e.target.value)} rows="2" />
+                    <select className="edit-input task" value={status} onChange={(e) => setStatus(e.target.value)}>
                         <option value="todo">К выполнению</option>
                         <option value="in_progress">В работе</option>
                         <option value="done">Готово</option>
                     </select>
-                    <input className="edit-input" value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} placeholder="ID исполнителя" />
-                    <input className="edit-input" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+                    <input className="edit-input task" value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} placeholder="ID исполнителя" />
+                    <input className="edit-input task" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
                     <div className="task-actions">
-                        <button onClick={handleUpdate} className="btn-save">Сохранить</button>
                         <button onClick={() => setIsEditing(false)} className="btn-cancel">Отмена</button>
+                        <button onClick={handleUpdate} className="btn-save">Сохранить</button>
                     </div>
                 </div>
             )}

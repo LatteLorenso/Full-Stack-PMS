@@ -233,21 +233,21 @@ function ProjectCard({ project, onDelete, onAddMember, onUpdate }) {
                 </>
             ) : (
                 <div className="edit-mode">
-                    <input 
-                        className="edit-input"
-                        value={editName} 
-                        onChange={(e) => setEditName(e.target.value)} 
+                    <input
+                        className="edit-input project"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
                         placeholder="Название"
                     />
-                    <input 
-                        className="edit-input"
-                        value={editDesc} 
-                        onChange={(e) => setEditDesc(e.target.value)} 
+                    <input
+                        className="edit-input project"
+                        value={editDesc}
+                        onChange={(e) => setEditDesc(e.target.value)}
                         placeholder="Описание"
                     />
-                    <div className="project-settings">
-                        <button onClick={handleSave} className="btn-change" style={{ background: '#2ecc71' }}>OK</button>
-                        <button onClick={() => setIsEditing(false)} className="btn-del" style={{ background: '#95a5a6' }}>X</button>
+                    <div className="task-actions">
+                        <button onClick={() => setIsEditing(false)} className="btn-cancel">Отмена</button>
+                        <button onClick={handleSave} className="btn-save">Сохранить</button>
                     </div>
                 </div>
             )}
@@ -283,7 +283,7 @@ function AddMemberModal({ users, projectMembers, ownerId, onClose, selectedUserI
                                 className={`user-item current-member ${selectedUserId === member.id ? 'selected' : ''}`} onClick={() => onSelect(member.id)}>
                                 <div className="member-info">
                                     <span>{member.username}</span>
-                                    {member.isOwner && <span className="owner-badge">admin</span>}
+                                    {member.isOwner && <span className="user-role owner">Owner</span>}
                                 </div>
                             </div>
                         ))}
@@ -299,8 +299,8 @@ function AddMemberModal({ users, projectMembers, ownerId, onClose, selectedUserI
                         {users.map(u => {
                             // Если пользователь уже в проекте — не показываем его здесь
                             if (memberIds.includes(u.id)) return null;
-                            
                             const isSelected = u.id === selectedUserId;
+                            
                             return (
                                 <div 
                                     key={u.id} 
