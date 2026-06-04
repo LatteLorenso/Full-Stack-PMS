@@ -11,6 +11,11 @@ function Projects() {
     const [error, setError] = useState('');
     const [showForm, setShowForm] = useState(false);
 
+    // Стейт для модал. окна добавления участников
+    const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
+    const [currentProjectId, setCurrentProjectId] = useState(null);
+    const [allUsers, setAllUsers] = useState([]);
+
     useEffect(() => {
         fetchProjects();
     }, []);
@@ -18,8 +23,8 @@ function Projects() {
     const fetchProjects = async () => {
         try {
             const res = await api.get('/projects');
-            const data = Array.isArray(res.data) ? res.data : (res.data.projects || []);
-            setProjects(data);
+            // const data = Array.isArray(res.data) ? res.data : (res.data.projects || []);
+            setProjects(res.data.projects || res.data);
         } catch (err) {
             setError('Ошибка загрузки проектов');
         }
@@ -54,6 +59,30 @@ function Projects() {
             fetchProjects();
         } catch (err) {
             setError('Ошибка удаления проекта');
+        }
+    };
+
+    // Открытие модалки для добавления участников
+    const openMemberModal = async (projectId) => {
+        setCurrentProjectId(projectId);
+        setIsMemberModalOpen(true);
+        try {
+            const res = await api.get("/users/all");
+            setAllUsers(res.data);
+        } catch (err) {
+            setError('Ошибка открытия модального окна и получения всех пользователей');
+        }
+    };
+
+    // Добавление участников в проект
+    const addMemberToProject = async (userId) => {
+        if (!currentProjectId) return;
+        try {
+            await api.post(`/projects/${currentProjectId}/members`, { user_id: userId });
+            alert("Участник добавлен");
+            fetchProjects();
+        } catch (err) {
+            setError('Ошибка добавления участников в проект');
         }
     };
 
@@ -100,17 +129,29 @@ function Projects() {
                             key={project.id}
                             project={project}
                             onDelete={deleteProject}
+                            onAddMember={() => openMemberModal(project.id)}
                             onUpdate={updateProject}
                         />
                     ))}
                 </div>
+
+                <section className="projects-modal-add">
+                    {isMemberModalOpen && (
+                        <AddMemberModal
+                            users={allUsers}
+                            onClose={() => setIsMemberModalOpen(false)}
+                            onAdd={addMemberToProject}
+                            currentUserId={user?.id}
+                        />
+                    )}
+                </section>
             </section>
         </div>
     );
 }
 
 // Компонент одной карточки
-function ProjectCard({ project, onDelete, onUpdate }) {
+function ProjectCard({ project, onDelete, onAddMember, onUpdate }) {
     const [isEditing, setIsEditing] = useState(false);
     const [editName, setEditName] = useState(project.name);
     const [editDesc, setEditDesc] = useState(project.description);
@@ -150,7 +191,7 @@ function ProjectCard({ project, onDelete, onUpdate }) {
                     <hr />
 
                     <div className="project-settings">
-                        <button onClick={() => setIsEditing(true)} className="btn-add">Добавить участников</button>
+                        <button onClick={onAddMember} className="btn-add">Добавить участников</button>
                         <button onClick={() => setIsEditing(true)} className="btn-change">Изменить</button>
                     </div>
                 </>
@@ -174,6 +215,27 @@ function ProjectCard({ project, onDelete, onUpdate }) {
                     </div>
                 </div>
             )}
+        </div>
+    );
+}
+
+function AddMemberModal({ users, onClose, onAdd, currentUserId }) {
+    return (
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <h3>Выбрать участника</h3>
+                <section className="user-list">
+                    {users.map(u => {
+                        u.id !== currentUserId && (
+                            <div key={u.id} className="user-item" onClick={onAdd(u.id)}>
+                                <span>{u.username}</span>
+                                <span className="user-role">{u.role}</span>
+                            </div>
+                        )
+                    })}
+                </section>
+                <button type="button" onClick={onClose} className="btn-cancel">Сохранить</button>
+            </div>
         </div>
     );
 }

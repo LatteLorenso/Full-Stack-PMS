@@ -173,4 +173,20 @@ router.delete('/:id', authenticate, async (req, res) => {
     res.json({ message: 'Проект удален' });
 });
 
+router.get('/users/all', authenticate, async (req, res) => {
+    const db = getDb();
+    const [rows] = await db.query('SELECT id, username, role FROM users');
+    res.json(rows);
+});
+
+router.post('/:id/members', authenticate, async (req, res) => {
+    const db = getDb();
+    const { id: projectId } = req.params;
+    const { user_id } = req.body;
+
+    await db.query('INSERT IGNORE INTO project_members (project_id, user_id) VALUES (?, ?)', [projectId, userId]);
+
+    res.json({ message: "Участник добавлен" });
+});
+
 module.exports = router;
