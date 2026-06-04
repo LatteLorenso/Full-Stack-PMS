@@ -20,19 +20,6 @@
     --color-text-muted: #9aa3b2;       /* второстепенный текст */
     --color-text-dim: #7b8291;         /* подсказки, мелкий текст */
 
-    /* ===== АКЦЕНТЫ (AM – I – GUESS – ?) ===== */
-    --color-accent-am: #00eaff;        /* AM — существование */
-    --color-accent-i: #9b5cff;         /* I — интеллект / AI */
-    --color-accent-guess: #00ffb3;     /* GUESS — вероятность */
-    --color-accent-question: #ff4d4d;  /* ? — неопределенность */
-
-    /* ===== КНОПКИ ===== */
-    --color-btn-primary: #00eaff;      /* фон основной кнопки */
-    --color-btn-primary-darker: #00eaffd8;
-    --color-btn-second: #9b5cff;       /* фон / граница второстепенной кнопки */
-    --color-btn-second-darker: #9b5cffd8;
-    --color-btn-text: #05060a;         /* цвет текста на кнопках */
-
     /* ===== ГРАНИЦЫ / ЛИНИИ ===== */
     --color-border-soft: rgba(255,255,255,0.08);
     --color-border-strong: rgba(255,255,255,0.15);
@@ -50,9 +37,6 @@
     --radius-sm: 2px;
     --radius-md: 12px;
     --radius-lg: 20px;
-
-    /* ===== Отступы ===== */
-    --header-height: 4.5rem;
 
         /* АКЦЕНТЫ СТРАНИЦ */
     --color-accent-home: #d1123b;

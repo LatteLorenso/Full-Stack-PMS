@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import "../Projects.css";
 
 function Projects() {
     const { user } = useAuth();
@@ -107,6 +108,7 @@ function Projects() {
 
             const projectsRes = await api.get(`/projects/${currentProjectId}`);
             setCurrentProjectData(projectsRes.data);
+            setSelectedUserId(null);
 
             fetchProjects();
         } catch (err) {
