@@ -5,6 +5,13 @@ const { authenticate, isAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
+// API Эндпоинт GET all users FROM users
+router.get('/users/all', authenticate, async (req, res) => {
+    const db = getDb();
+    const [rows] = await db.query('SELECT id, username, role FROM users');
+    res.json(rows);
+});
+
 // API Эндпоинт GET api/projects?page=1&limit=10
 router.get('/', authenticate, async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
@@ -90,37 +97,43 @@ router.post('/', authenticate, async (req, res) => {
     }
 });
 
-// API Эндпоинт GET project by id with tasks
+// API Эндпоинт GET project by id with tasks AND members
 router.get('/:id', authenticate, async (req, res) => {
     const projectId = req.params.id;
     const db = getDb();
-    const [projectRows] = await db.query(
-        'SELECT * FROM projects WHERE id = ?', [projectId]
-    );
 
+    const [projectRows] = await db.query('SELECT * FROM projects WHERE id = ?', [projectId]);
     if (projectRows.length === 0) {
         return res.status(404).json({ error: "Проект не найден" });
     }
-
     const project = projectRows[0];
 
     const [membersRows] = await db.query(
-        'SELECT * FROM project_members WHERE project_id = ? AND user_id = ?',
-        [projectId, req.user.id]
+        'SELECT * FROM project_members WHERE project_id = ? AND user_id = ?', [projectId, req.user.id]
     );
-
     if (req.user.role !== 'admin' && project.owner_id !== req.user.id && membersRows.length === 0) {
         return res.status(403).json({ error: "Доступ запрещен" });
     }
+
+    const [members] = await db.query(
+        `SELECT u.id, u.username, u.role
+        FROM project_members pm
+        JOIN users u ON pm.user_id = u.id
+        WHERE pm.project_id = ?`, [projectId]
+    );
+
+    const [ownerData] = await db.query('SELECT id, username, role FROM users WHERE id = ?', [project.owner_id]);
+
+    const fullTeam = [{ ...ownerData[0], isOwner: true }, ...members.map(m => ({ ...m, isOwner: false }))];
 
     const [tasks] = await db.query(
         `SELECT t.*, u.username as assigned_name
         FROM tasks t
         LEFT JOIN users u ON t.assigned_to = u.id
-        WHERE t.project_id = ?`,
-        [projectId]
+        WHERE t.project_id = ?`, [projectId]
     );
-    res.json({ ...project, tasks });
+
+    res.json({ ...project, tasks, members: fullTeam });
 });
 
 // API Эндпоинт PUT update project
@@ -144,7 +157,7 @@ router.put('/:id', authenticate, async (req, res) => {
 
     await db.query(
         'UPDATE projects p SET name = ?, description = ? WHERE id = ?',
-        [name || p.name, description || p.description, projectId]
+        [name || project.name, description || project.description, projectId]
     );
     res.json({ message: 'Проект обновлен' });
 });
@@ -173,20 +186,28 @@ router.delete('/:id', authenticate, async (req, res) => {
     res.json({ message: 'Проект удален' });
 });
 
-router.get('/users/all', authenticate, async (req, res) => {
-    const db = getDb();
-    const [rows] = await db.query('SELECT id, username, role FROM users');
-    res.json(rows);
-});
-
 router.post('/:id/members', authenticate, async (req, res) => {
     const db = getDb();
     const { id: projectId } = req.params;
     const { user_id } = req.body;
 
-    await db.query('INSERT IGNORE INTO project_members (project_id, user_id) VALUES (?, ?)', [projectId, userId]);
+    if (req.user.role !== 'admin' && project.owner_id !== req.user.id) {
+        return res.status(403).json({ error: "В разрешении отказано" });
+    }
 
+    await db.query('INSERT IGNORE INTO project_members (project_id, user_id) VALUES (?, ?)', [projectId, user_id]);
     res.json({ message: "Участник добавлен" });
+});
+
+router.delete('/:id/members', authenticate, async (req, res) => {
+    const { id: projectId, userId } = req.params;
+
+    if (req.user.role !== 'admin' && project.owner_id !== req.user.id) {
+        return res.status(403).json({ error: "В разрешении отказано" });
+    }
+
+    await db.query('DELETE FROM project_members WHERE project_id = ? AND user_id = ?', [projectId, userId]);
+    res.json({ message: "Участник удален" });
 });
 
 module.exports = router;

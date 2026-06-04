@@ -15,6 +15,7 @@ function Projects() {
     const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
     const [currentProjectId, setCurrentProjectId] = useState(null);
     const [allUsers, setAllUsers] = useState([]);
+    const [selectedUserId, setSelectedUserId] = useState(null);
 
     useEffect(() => {
         fetchProjects();
@@ -67,22 +68,40 @@ function Projects() {
         setCurrentProjectId(projectId);
         setIsMemberModalOpen(true);
         try {
-            const res = await api.get("/users/all");
+            const res = await api.get("/projects/users/all");
             setAllUsers(res.data);
         } catch (err) {
             setError('Ошибка открытия модального окна и получения всех пользователей');
         }
     };
+    
+    const handleSelectMember = (id) => {
+        setSelectedUserId(id === selectedUserId ? null : id);
+    };
 
     // Добавление участников в проект
-    const addMemberToProject = async (userId) => {
-        if (!currentProjectId) return;
+    const handleAcceptMember = async () => {
+        if (!selectedUserId || !currentProjectId) return;
+
         try {
-            await api.post(`/projects/${currentProjectId}/members`, { user_id: userId });
-            alert("Участник добавлен");
+            await api.post(`/projects/${currentProjectId}/members`, { user_id: selectedUserId });
+            console.log("Участник добавлен");
+            setIsMemberModalOpen(false);
+            setSelectedUserId(null);
             fetchProjects();
         } catch (err) {
-            setError('Ошибка добавления участников в проект');
+            setError('Ошибка добавления участника');
+        }
+    };
+
+    const handleRemoveMember = async () => {
+        if (!currentProjectId || !window.confirm("Удалить участника из проекта?")) return;
+
+        try {
+            await api.delete(`/projects/${currentProjectId}/members/${userId}`);
+            fetchProjects();
+        } catch (err) {
+            setError('Ошибка удаления участника');
         }
     };
 
@@ -139,8 +158,12 @@ function Projects() {
                     {isMemberModalOpen && (
                         <AddMemberModal
                             users={allUsers}
+                            projectId={currentProjectId}
                             onClose={() => setIsMemberModalOpen(false)}
-                            onAdd={addMemberToProject}
+                            selectedUserId={selectedUserId}
+                            onSelect={handleSelectMember}
+                            onAccept={handleAcceptMember}
+                            onRemove={handleRemoveMember}
                             currentUserId={user?.id}
                         />
                     )}
@@ -219,22 +242,39 @@ function ProjectCard({ project, onDelete, onAddMember, onUpdate }) {
     );
 }
 
-function AddMemberModal({ users, onClose, onAdd, currentUserId }) {
+function AddMemberModal({ users, projectId, onClose, selectedUserId, onSelect, onAccept, onRemove, currentUserId }) {
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                <h3>Выбрать участника</h3>
-                <section className="user-list">
-                    {users.map(u => {
-                        u.id !== currentUserId && (
-                            <div key={u.id} className="user-item" onClick={onAdd(u.id)}>
-                                <span>{u.username}</span>
-                                <span className="user-role">{u.role}</span>
-                            </div>
-                        )
-                    })}
+                <button onClick={onClose} className="btn-del">×</button>
+                <h3>Управление командой</h3>
+
+                <section className="modal-section">
+                    <h4>Добавить участника</h4>
+                    <section className="user-list">
+                        {users.map(u => {
+                            const isSelected = u.id === selectedUserId;
+                            return (
+                                <div key={u.id} className={`user-item ${isSelected ? 'selected' : ''}`} onClick={() => onSelect(u.id)}>
+                                    <span>{u.username}</span>
+                                    <span className={`user-role ${u.role}`}>{u.role}</span>
+                                </div>
+                            );
+                        })}
+                    </section>
+                    <button type="button" onClick={onAccept} className="btn-accept" disabled={!selectedUserId}>Добавить</button>
                 </section>
-                <button type="button" onClick={onClose} className="btn-cancel">Сохранить</button>
+
+                <hr />
+
+                <section className="modal-section">
+                    <h4>Текущая команда</h4>
+                    <CurrentMembersList
+                        projectId={projectId}
+                        onRemove={onRemove}
+                        currentUserId={currentUserId}
+                    />
+                </section>
             </div>
         </div>
     );

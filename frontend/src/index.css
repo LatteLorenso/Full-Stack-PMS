@@ -56,6 +56,7 @@
 
         /* АКЦЕНТЫ СТРАНИЦ */
     --color-accent-home: #d1123b;
+    --border-color-accent-home: #b31033;
     --color-accent-dashboard: #f88809;
     --color-accent-projects: #23b879;
     --border-color-accent-projects: #1b8f5e;
@@ -443,4 +444,124 @@ hr {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
     color: white;
+}
+
+/* Модальное окно */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    width: 400px;
+    max-width: 90%;
+    border-radius: var(--radius-md);
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.2rem;
+    color: black;
+}
+
+.user-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding-right: 5px; /* Место для скроллбара */
+    
+    /* Кастомный скроллбар */
+    scrollbar-width: thin;
+    scrollbar-color: #555 #2a2a2a;
+}
+
+/* Элемент списка (один пользователь) */
+.user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    background: #f1f1f1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.user-item.selected {
+    background: #d4d4d4;
+}
+
+.user-item:hover {
+    background: #d4d4d4;
+}
+
+.user-role {
+    width: 65px;
+    max-width: 90%;
+    text-align: center;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.user-role.user {
+    color: white;
+    border: 2px solid var(--border-color-accent-tasks);
+    background-color: rgba(231, 76, 60, 0.2);
+}
+
+.user-role.admin {
+    color: #c90000;
+    border: 1px solid var(--border-color-accent-home);
+    background-color: rgba(231, 76, 60, 0.2);
+}
+
+/* Кнопка закрытия/сохранения */
+.btn-accept, .btn-cancel {
+    width: 100%;
+    padding: 12px;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.btn-accept {
+    background: var(--color-accent-projects);
+}
+.btn-accept.disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.btn-accept:hover {
+    background: var(--border-color-accent-projects);
+}
+
+.btn-cancel {
+    background: #333;
+}
+
+.btn-cancel:hover {
+    background: #444;
 }
