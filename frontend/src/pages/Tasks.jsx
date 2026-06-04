@@ -148,6 +148,7 @@ function TaskItem({ task, onDelete, onUpdate }) {
         <div className="task-card">
             {!isEditing ? (
                 <>
+                <button onClick={() => onDelete(task.id)} className="btn-del">×</button>
                     <div className="task-header">
                         <section className="sec-badge">
                             <span className={`status-badge ${task.status}`}>
@@ -165,7 +166,6 @@ function TaskItem({ task, onDelete, onUpdate }) {
                     </div>
                     <div className="task-actions">
                         <button onClick={() => setIsEditing(true)} className="btn-edit">Изменить</button>
-                        <button onClick={() => onDelete(task.id)} className="btn-del">Удалить</button>
                     </div>
                 </>
             ) : (
