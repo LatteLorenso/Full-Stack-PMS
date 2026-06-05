@@ -3,3 +3,5 @@ dist/
 .env
 **/.env
 uploads/
+test-results.json
+test-report.json
