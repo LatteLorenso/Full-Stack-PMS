@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import "../Projects.css";
+import ProjectPdf from '../components/ProjectPdf';
+import html2pdf from 'html2pdf.js';
 
 function Projects() {
     const { user } = useAuth();
@@ -229,7 +231,27 @@ function ProjectCard({ project, onDelete, onAddMember, onUpdate }) {
                     <div className="project-settings">
                         <button onClick={onAddMember} className="btn-add">Добавить участников</button>
                         <button onClick={() => setIsEditing(true)} className="btn-change">Изменить</button>
+                        <button onClick={() => {
+                            const element = document.getElementById(`pdf-content-${project.id}`);
+                            if (element) {
+                                html2pdf().from(element).save(`project-${project.name}.pdf`);
+                            } else {
+                                console.error("Элемент для PDF не найден");
+                            }
+                        }} className="btn-pdf">Скачать PDF</button>
                     </div>
+
+                    <section className="section-pdf visually-hidden">
+                        <section id={`pdf-content-${project.id}`}>
+                            <section className="pdf-info">
+                                <h1>{project.name}</h1>
+                                <p><strong>Описание:</strong> {project.description}</p>
+                                <p><strong>Основатель:</strong> {project.owner_name}</p>
+                                <hr />
+                                <p><em>Отчет сгенерирован автоматически</em></p>
+                            </section>
+                        </section>
+                    </section>
                 </>
             ) : (
                 <div className="edit-mode">
