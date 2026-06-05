@@ -4,6 +4,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const projectRoutes = require("./routes/projects");
 const taskRoutes = require("./routes/tasks");
+const path = require("path");
 const dashboardRoutes = require("./routes/dashboard");
 const commentsRoutes = require("./routes/comments");
 const { initDb, getDb } = require("./db/db");
@@ -25,6 +26,7 @@ app.use(express.json());
         app.use('/api/tasks', taskRoutes);
         app.use('/api/dashboard', dashboardRoutes);
         app.use('/api/comments', commentsRoutes);
+        app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
         app.listen(process.env.PORT);
     } catch (err) {
