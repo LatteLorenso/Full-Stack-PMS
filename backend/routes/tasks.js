@@ -63,6 +63,18 @@ router.post('/', authenticate, async (req, res) => {
         VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [title, description || '', status || 'todo', project_id, assigned_to || null, req.user.id, due_date || null]
     );
+
+    // Отправка уведомления всем пользователям находящимся на странице с задачами через WebSocket
+    const io = req.app.get('io'); // Достает io из server.js
+
+    if (io) {
+        io.to(project_id.toString()).emit('new_task', {
+            id: result.insertId,
+            title,
+            message: `Пользователь ${req.user.username} создал новую задачу!`
+        });
+    }
+
     res.status(201).json({ id: result.insertId, title, description, status, project_id, assigned_to, due_date });
 });
 
