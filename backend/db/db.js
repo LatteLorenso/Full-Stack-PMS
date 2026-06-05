@@ -15,7 +15,7 @@ const initDb = async () => {
   const conn = await pool.getConnection();
   await conn.ping();
   conn.release();
-  console.log('MySQL подключился');
+  console.log('MySQL подключен, порт:', 3306);
 };
 
 const getDb = () => {

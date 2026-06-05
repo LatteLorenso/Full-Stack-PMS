@@ -9,11 +9,19 @@ const dashboardRoutes = require("./routes/dashboard");
 const commentsRoutes = require("./routes/comments");
 const { initDb, getDb } = require("./db/db");
 
+const { createClient } = require("redis");
+const redisClient = createClient({ url: 'redis://localhost:6379' });
+redisClient.on("error", (err) => console.log('Redis Client Error', err));
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
+
+(async () => {
+    await redisClient.connect();
+    console.log('Redis подключен, порт:', 6379);
+})();
 
 (async () => {
     try {
@@ -22,7 +30,7 @@ app.use(express.json());
 
         // API Эндпоинты
         app.use('/api/auth', authRoutes);
-        app.use('/api/projects', projectRoutes);
+        app.use('/api/projects', projectRoutes(redisClient));
         app.use('/api/tasks', taskRoutes);
         app.use('/api/dashboard', dashboardRoutes);
         app.use('/api/comments', commentsRoutes);
