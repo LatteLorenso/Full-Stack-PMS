@@ -2,6 +2,7 @@ const express = require('express');
 const { getDb } = require('../db/db');
 
 const { authenticate, isAdmin } = require('../middleware/auth');
+const upload = require('../middleware/upload');
 
 const router = express.Router();
 
@@ -117,5 +118,65 @@ router.delete('/:id', authenticate, async (req, res) => {
     await db.query('DELETE FROM tasks WHERE id = ?', [taskId]);
     res.json({ message: 'Задача удалена' });
 });
+
+// API Эндпоинт POST загрузка файлов
+router.post('/:taskId/files', authenticate, upload.single('file'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "Файл не выбран" });
+        }
+
+        const taskId = req.params.id;
+        const db = getDb();
+
+        await db.query(
+            'INSERT INTO task_files (task.id, filename, filepath) VALUES (?, ?, ?)',
+            [taskId, req.file.originalname, req.file.path]
+        );
+        res.json({ message: "Файл загружен", file: req.file });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Ошибка загрузки файла" });
+    }
+});
+
+// API Эндпоинт GET список файлов задачи
+router.get('/:taskId/files', authenticate, async (req, res) => {
+    try {
+        const taskId = req.params.id;
+        const db = getDb();
+        
+        const [files] = await db.query(
+            'SELECT * FROM task_files WHERE task_id = ?', [taskId]
+        );
+        res.json({ message: "Файлы получены" }, files);
+    } catch (err) {
+        res.status(500).json({ error: "Ошибка получения файлов" });
+    }
+});
+
+// API Эндпоинт DELETE - Удалить файл
+router.delete('/files/:fileId', authenticate, async (req, res) => {
+    try {
+        const fileId = req.params.fileId;
+        const db = getDb();
+
+        const [rows] = await db.query(
+            'SELECT filepath FROM task_files WHERE id = ?', [fileId]
+        );
+        if (rows.length > 0) {
+            const fs = require('fs');
+            const path = rows[0].filepath;
+            if (fs.existsSync(path)) {
+                fs.unlinkSync(path);
+            }
+        }
+        await db.query('DELETE FROM task_files WHERE id = ?', [fileId]);
+        res.json({ message: "Файлы удален" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Ошибка удаления файла" });
+    }
+}); 
 
 module.exports = router;
