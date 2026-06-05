@@ -11,14 +11,14 @@ const storage = multer.diskStorage({
     }
 });
 
-const fileFilter = (req, res, cb) => {
-    if (file.mimetype.startWith('image/') || file.mimetype === 'application/pdf') {
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/') || file.mimetype === 'application/pdf') {
         cb(null, true);
     } else {
         cb(new Error("Неподдерживаемый тип файла"), false);
     }
 };
 
-const upload = { storage: storage, fileFilter: fileFilter };
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 
-module.exports = { upload };
+module.exports = upload;

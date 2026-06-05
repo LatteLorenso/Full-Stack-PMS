@@ -123,15 +123,15 @@ router.delete('/:id', authenticate, async (req, res) => {
 router.post('/:taskId/files', authenticate, upload.single('file'), async (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).json({ message: "Файл не выбран" });
+            return res.status(400).json({ error: "Файл не выбран" });
         }
 
-        const taskId = req.params.id;
+        const taskId = req.params.taskId;
         const db = getDb();
 
         await db.query(
-            'INSERT INTO task_files (task.id, filename, filepath) VALUES (?, ?, ?)',
-            [taskId, req.file.originalname, req.file.path]
+            'INSERT INTO task_files (task_id, filename) VALUES (?, ?, ?)',
+            [taskId, req.file.filename]
         );
         res.json({ message: "Файл загружен", file: req.file });
     } catch (err) {
