@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Projects from '../pages/Projects';
+import NotificationBell from './NotificationBell';
 
 function Navbar() {
     const { user, logout } = useAuth();
@@ -26,6 +27,8 @@ function Navbar() {
                     <Link to="/tasks" class="links-tasks">Tasks</Link>
                 </section>
                 <section class="container-user">
+                    <NotificationBell />
+                    <Link to="/profile">Профиль</Link>
                     <span>{user?.username} ({user?.role})</span>
                     <button onClick={handleLogout} class="btn-logout">Logout</button>
                 </section>

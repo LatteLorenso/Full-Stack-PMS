@@ -73,6 +73,7 @@ router.post('/', authenticate, async (req, res) => {
             title,
             message: `Пользователь ${req.user.username} создал новую задачу!`
         });
+        console.log(`Создание задачи ${project_id}`);
     }
 
     res.status(201).json({ id: result.insertId, title, description, status, project_id, assigned_to, due_date });
@@ -94,6 +95,7 @@ router.put('/:id', authenticate, async (req, res) => {
     if (proj.length === 0) {
         return res.status(404).json({ error: "Проект не найден" });
     }
+    const projectId = proj[0].id;
 
     if (req.user.role !== 'admin' && proj[0].owner_id !== req.user.id && task.created_by !== req.user.id) {
         return res.status(403).json({ error: "В разрешении отказано" });
@@ -102,33 +104,52 @@ router.put('/:id', authenticate, async (req, res) => {
     await db.query(
         `UPDATE tasks t SET title = COALESCE(?, title), description = COALESCE(?, description),
         status = COALESCE(?, status), assigned_to = ?, due_date = ? WHERE id = ?`,
-        [title || task.title, description || '', status || 'todo', assigned_to, due_date, taskId]
+        [title || task.title, description || '', status || 'todo', assigned_to || null, due_date || null, taskId]
     );
+
+    // Отправка уведомления всем пользователям находящимся на странице с задачами через WebSocket
+    const io = req.app.get('io'); // Достает io из server.js
+    if (io) {
+        io.to(projectId.toString()).emit('task_updated', {
+            id: parseInt(taskId),
+            title, description, status, assigned_to, due_date
+        });
+        console.log(`Обновление задачи ${projectId}`);
+    }
+
     res.json({ message: 'Задача обновлена' });
 });
 
 // API Эндпоинт DELETE task
-router.delete('/:id', authenticate, async (req, res) => {
-    const taskId = req.params.id;
+router.delete('/:id', async (req, res) => {
     const db = getDb();
+    const taskId = req.params.id; 
 
-    const [taskRows] = await db.query('SELECT * FROM tasks WHERE id = ?', [taskId]);
-    if (taskRows.length === 0) {
-        return res.status(404).json({ error: "Задача не найдена" });
+    try {
+        // 1. Сначала узнаем project_id задачи
+        const [rows] = await db.query('SELECT project_id FROM tasks WHERE id = ?', [taskId]);
+
+        if (rows.length > 0) {
+            const projectId = rows[0].project_id; // 👈 ВОТ ЭТА СТРОКА ВАЖНА!
+
+            // 2. Удаляем задачу
+            await db.query('DELETE FROM tasks WHERE id = ?', [taskId]);
+
+            // 3. Отправляем уведомление
+            const io = req.app.get('io');
+            if (io) {
+                io.to(projectId.toString()).emit('task_deleted', { id: parseInt(taskId) });
+                console.log(`Удаление задачи ${projectId}`);
+            }
+            
+            res.json({ message: 'Задача удалена' });
+        } else {
+            res.status(404).json({ error: "Задача не найдена" });
+        }
+    } catch (err) {
+        console.error("Ошибка при удалении:", err);
+        res.status(500).json({ error: "Ошибка сервера при удалении" });
     }
-    const task = taskRows[0];
-
-    const [proj] = await db.query('SELECT * FROM projects WHERE id = ?', [task.project_id]);
-    if (proj.length === 0) {
-        return res.status(404).json({ error: "Проект не найден" });
-    }
-
-    if (req.user.role !== 'admin' && proj[0].owner_id !== req.user.id && task.created_by !== req.user.id) {
-        return res.status(403).json({ error: "В разрешении отказано" });
-    }
-
-    await db.query('DELETE FROM tasks WHERE id = ?', [taskId]);
-    res.json({ message: 'Задача удалена' });
 });
 
 // API Эндпоинт POST загрузка файлов

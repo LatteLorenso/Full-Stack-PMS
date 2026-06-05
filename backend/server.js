@@ -21,6 +21,8 @@ const io = new Server(server, {
     }
 });
 
+const PORT = process.env.PORT || 5000;
+
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
@@ -33,6 +35,7 @@ redisClient.on("error", (err) => console.log('Redis Client Error', err));
     try {
         await initDb();
         await redisClient.connect();
+        console.log('Сервер запустился на:', process.env.PORT);
         console.log('Redis подключен, порт:', 6379);
 
         // API Эндпоинты
@@ -58,9 +61,7 @@ redisClient.on("error", (err) => console.log('Redis Client Error', err));
             });
         });
 
-        server.listen(() => {
-            console.log('Сервер запустился, порт:', process.env.PORT || 5000);
-        });
+        server.listen(process.env.PORT);
     } catch (err) {
         console.error('Ошибка подключения к БД:', err.message);
         process.exit(1);

@@ -3,6 +3,9 @@ import api from '../services/api';
 import { useParams, Link } from 'react-router-dom';
 import '../Tasks.css';
 import TaskFiles from '../components/TaskFiles';
+import io from 'socket.io-client';
+
+const socket = io();
 
 function Tasks() {
     const { id } = useParams();
@@ -18,18 +21,55 @@ function Tasks() {
     const [error, setError] = useState('');
     const [showForm, setShowForm] = useState(false);
 
+    // Первая загрузка ВСЕХ задач проекта
     useEffect(() => {
+        const fetchTasks = async () => {
+            try {
+                const res = await api.get('/tasks', { params: { project_id: id } });
+                setTasks(res.data);
+            } catch (err) {
+                setError('Ошибка загрузки задач');
+            }
+        };
         fetchTasks();
     }, [id]);
 
-    const fetchTasks = async () => {
-        try {
-            const res = await api.get('/tasks', { params: { project_id: id } });
-            setTasks(res.data);
-        } catch (err) {
-            setError('Ошибка загрузки задач');
-        }
-    };
+    //  Подписка на НОВЫЕ задачи проекта
+    useEffect(() => {
+        if (!id) return;
+
+        socket.emit('join_project', id);
+
+        // 1. Новая задача
+        socket.on('new_task', (data) => {
+            setTasks(prev => [{
+                id: data.id,
+                title: data.title,
+                description: "",
+                status: "todo",
+                project_id: id,
+                created_at: new Date().toISOString()
+            }, ...prev]);
+        });
+
+        // 2. 🔥 Обновление задачи
+        socket.on('task_updated', (updatedData) => {
+            setTasks(prev => prev.map(task => 
+                task.id === updatedData.id ? { ...task, ...updatedData } : task
+            ));
+        });
+
+        // 3. 🔥 Удаление задачи
+        socket.on('task_deleted', (data) => {
+            setTasks(prev => prev.filter(task => task.id !== data.id));
+        });
+
+        return () => {
+            socket.off('new_task');
+            socket.off('task_updated');   // 👈 Не забываем чистить
+            socket.off('task_deleted');   // 👈 И этот тоже
+        };
+    }, [id]);
 
     const createTask = async (e) => {
         e.preventDefault();
@@ -41,18 +81,26 @@ function Tasks() {
                 assigned_to: assignedTo || null, 
                 due_date: dueDate || null 
             });
-            setTitle(''); setDescription(''); setAssignedTo(''); setStatus('todo'); setDueDate('');
+            
+            setTitle('');
+            setDescription('');
+            setAssignedTo('');
+            setStatus('todo');
+            setDueDate('');
             setShowForm(false);
-            fetchTasks();
         } catch (err) {
-            setError('Ошибка создания задачи');
+            console.error("Полная ошибка:", err);
+            if (err.response) {
+                setError(`Ошибка сервера: ${err.response.status} - ${JSON.stringify(err.response.data)}`);
+            } else {
+                setError('Ошибка сети или создание задачи');
+            }
         }
     };
 
     const updateTask = async (taskId, updatedData) => {
         try {
             await api.put(`/tasks/${taskId}`, updatedData);
-            fetchTasks();
         } catch (err) {
             setError('Ошибка обновления задачи');
         }
@@ -62,7 +110,6 @@ function Tasks() {
         if (!window.confirm('Удалить задачу?')) return;
         try {
             await api.delete(`/tasks/${taskId}`);
-            fetchTasks();
         } catch (err) {
             setError('Ошибка удаления задачи');
         }
@@ -162,7 +209,7 @@ function TaskItem({ task, onDelete, onUpdate }) {
                     </div>
                     <p className="task-desc">{task.description || 'Нет описания'}</p>
                     <div className="task-meta">
-                        <div className="meta-item"><span>Исполнитель:</span> <strong>{task.assigned_name || 'Не назначен'}</strong></div>
+                        <div className="meta-item"><span>Исполнитель:</span> <strong>{task.assigned_to || 'Не назначен'}</strong></div>
                         <div className="meta-item"><span>Срок:</span> <strong>{formattedDate}</strong></div>
                     </div>
                     <div className="task-actions">
@@ -174,8 +221,8 @@ function TaskItem({ task, onDelete, onUpdate }) {
                 </>
             ) : (
                 <div className="edit-mode">
-                    <input className="edit-input task" value={title} onChange={(e) => setTitle(e.target.value)} />
-                    <input className="edit-input task" value={description} onChange={(e) => setDescription(e.target.value)} rows="2" />
+                    <input className="edit-input task" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Название' />
+                    <input className="edit-input task" value={description} onChange={(e) => setDescription(e.target.value)} placeholder='Описание' />
                     <select className="edit-input task" value={status} onChange={(e) => setStatus(e.target.value)}>
                         <option value="todo">К выполнению</option>
                         <option value="in_progress">В работе</option>
