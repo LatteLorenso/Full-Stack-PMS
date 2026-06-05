@@ -5,26 +5,11 @@
     margin: 20px 60px;
 }
 
-.header-page {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.back-link {
-    text-decoration: none;
-    color: #aaa;
-    cursor: pointer;
-    margin-right: 20px;
-    font-size: 1.2rem;
-    text-transform: uppercase;
-}
-
 .container-project h1 {
     font-size: 2rem;
     font-weight: 600;
     color: black;
-    margin: 0;
+    margin: 20px 0 0 0;
 }
 
 .container-project p {

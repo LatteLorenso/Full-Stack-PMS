@@ -1,0 +1,75 @@
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 60px;
+}
+
+.main-stat {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 30px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgb(0, 0, 0, 0.1);
+    padding: 35px;
+    cursor: default;
+    transition: transform 0.3s, box-shadow 0.3s ease;
+}
+
+.main-stat:hover {
+    transform: scale(1.02);
+}
+
+.main-stat h2 {
+    font-size: 3rem;
+    margin: 0;
+    color: var(--color-accent-projects);
+}
+
+.main-stat p {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.chart-box {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgb(0, 0, 0, 0.1);
+    padding: 20px;
+    cursor: default;
+    transition: transform 0.3s, box-shadow 0.3s ease;
+}
+
+.chart-box:hover {
+    transform: scale(1.02);
+}
+
+.chart-box h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.chart-wrapper {
+    min-height: 300px;
+    position: relative;
+}
+
+.loading, .error {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2rem;
+}
