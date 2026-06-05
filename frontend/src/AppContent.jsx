@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import Tasks from './pages/Tasks';
+import TaskFiles from './components/TaskFiles';
 
 const PrivateRoute = ({ children }) => {
     const { token, loading } = useAuth();

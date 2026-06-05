@@ -130,7 +130,7 @@ router.post('/:taskId/files', authenticate, upload.single('file'), async (req, r
         const db = getDb();
 
         await db.query(
-            'INSERT INTO task_files (task_id, filename) VALUES (?, ?, ?)',
+            'INSERT INTO task_files (task_id, filename) VALUES (?, ?)',
             [taskId, req.file.filename]
         );
         res.json({ message: "Файл загружен", file: req.file });
@@ -149,7 +149,7 @@ router.get('/:taskId/files', authenticate, async (req, res) => {
         const [files] = await db.query(
             'SELECT * FROM task_files WHERE task_id = ?', [taskId]
         );
-        res.json({ message: "Файлы получены" }, files);
+        res.json(files);
     } catch (err) {
         res.status(500).json({ error: "Ошибка получения файлов" });
     }
