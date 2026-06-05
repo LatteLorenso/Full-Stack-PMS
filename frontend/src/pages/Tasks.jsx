@@ -221,15 +221,50 @@ function TaskItem({ task, onDelete, onUpdate }) {
                 </>
             ) : (
                 <div className="edit-mode">
-                    <input className="edit-input task" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Название' />
-                    <input className="edit-input task" value={description} onChange={(e) => setDescription(e.target.value)} placeholder='Описание' />
-                    <select className="edit-input task" value={status} onChange={(e) => setStatus(e.target.value)}>
+                    {/* Название */}
+                    <input 
+                        className="edit-input task" 
+                        defaultValue={title} 
+                        onChange={(e) => setTitle(e.target.value)} 
+                        placeholder="Название задачи" 
+                    />
+                
+                    {/* Описание - лучше использовать textarea для многострочного текста */}
+                    <textarea 
+                        className="edit-input task" 
+                        defaultValue={description} 
+                        onChange={(e) => setDescription(e.target.value)} 
+                        placeholder="Описание задачи"
+                        rows="3"
+                    />
+                
+                    {/* Статус */}
+                    <select 
+                        className="edit-input task" 
+                        value={status} 
+                        onChange={(e) => setStatus(e.target.value)}
+                    >
                         <option value="todo">К выполнению</option>
                         <option value="in_progress">В работе</option>
                         <option value="done">Готово</option>
                     </select>
-                    <input className="edit-input task" value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} placeholder="ID исполнителя" />
-                    <input className="edit-input task" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+                
+                    {/* Исполнитель */}
+                    <input 
+                        className="edit-input task" 
+                        defaultValue={assignedTo} 
+                        onChange={(e) => setAssignedTo(e.target.value)} 
+                        placeholder="ID исполнителя" 
+                    />
+                
+                    {/* Дата */}
+                    <input 
+                        className="edit-input task" 
+                        type="date" 
+                        defaultValue={dueDate ? dueDate.split('T')[0] : ''} 
+                        onChange={(e) => setDueDate(e.target.value)} 
+                    />
+                
                     <div className="task-actions">
                         <button onClick={() => setIsEditing(false)} className="btn-cancel">Отмена</button>
                         <button onClick={handleUpdate} className="btn-save">Сохранить</button>
