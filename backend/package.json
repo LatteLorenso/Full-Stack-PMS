@@ -7,9 +7,9 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "docker-it": "docker exec -it full_stack_mysql mysql -u app_user -p full_stack_pms_db",
+    "init-db": "node scripts/initDb.js",
     "redis-it": "docker exec -it full_stack_redis redis-cli",
-    "redis-it-monitor": "docker exec -it full_stack_redis redis-cli MONITOR",
-    "init-db": "node scripts/initDb.js"
+    "redis-it-monitor": "docker exec -it full_stack_redis redis-cli MONITOR"
   },
   "keywords": [],
   "author": "",
