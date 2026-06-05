@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { useParams, Link } from 'react-router-dom';
 import '../Tasks.css';
+import TaskFiles from '../components/TaskFiles';
 
 function Tasks() {
     const { id } = useParams();
@@ -167,6 +168,9 @@ function TaskItem({ task, onDelete, onUpdate }) {
                     <div className="task-actions">
                         <button onClick={() => setIsEditing(true)} className="btn-edit">Изменить</button>
                     </div>
+                    <section className="task-details">
+                        <TaskFiles taskId={task.id} />
+                    </section>
                 </>
             ) : (
                 <div className="edit-mode">

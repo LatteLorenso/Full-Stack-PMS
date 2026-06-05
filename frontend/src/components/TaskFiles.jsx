@@ -15,6 +15,9 @@ function TaskFiles({ taskId }) {
     const fetchFiles = async () => {
         try {
             const res = await api.get(`/tasks/${taskId}/files`);
+
+            const data = Array.isArray(res.data) ? res.data : (res.data.files || []);
+
             setFiles(res.data);
         } catch (err) {
             console.error("Ошибка загрузки файлов:", err);

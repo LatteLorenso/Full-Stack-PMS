@@ -1,0 +1,103 @@
+.task-files-container {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.task-files-container h4 {
+    margin-bottom: 10px;
+    color: #ccc;
+    font-size: 1rem;
+}
+
+.files-list {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.no-files {
+    color: #666;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.file-link {
+    color: #4a90e2;
+    text-decoration: none;
+    word-break: break-all;
+    flex-grow: 1;
+    margin-right: 10px;
+    transition: color 0.2s;
+}
+
+.file-link:hover {
+    color: #6ab0ff;
+    text-decoration: underline;
+}
+
+.btn-file-del {
+    background: transparent;
+    border: none;
+    color: #ff6b6b;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: 1;
+    opacity: 0.7;
+}
+
+.btn-file-del:hover {
+    opacity: 1;
+    color: #ff0000;
+}
+
+.file-upload-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.file-upload-form input[type="file"] {
+    flex-grow: 1;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    color: #ccc;
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.btn-upload {
+    padding: 8px 16px;
+    background: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+.btn-upload:hover:not(:disabled) {
+    background: #27ae60;
+}
+
+.btn-upload:disabled {
+    background: #555;
+    color: #888;
+    cursor: not-allowed;
+}
