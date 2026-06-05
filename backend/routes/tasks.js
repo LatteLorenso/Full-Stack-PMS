@@ -143,7 +143,7 @@ router.post('/:taskId/files', authenticate, upload.single('file'), async (req, r
 // API Эндпоинт GET список файлов задачи
 router.get('/:taskId/files', authenticate, async (req, res) => {
     try {
-        const taskId = req.params.id;
+        const taskId = req.params.taskId;
         const db = getDb();
         
         const [files] = await db.query(
@@ -160,19 +160,31 @@ router.delete('/files/:fileId', authenticate, async (req, res) => {
     try {
         const fileId = req.params.fileId;
         const db = getDb();
+        const pathModule = require('path');
+        const fs = require('fs');
 
         const [rows] = await db.query(
-            'SELECT filepath FROM task_files WHERE id = ?', [fileId]
+            'SELECT filename FROM task_files WHERE id = ?', [fileId]
         );
         if (rows.length > 0) {
-            const fs = require('fs');
-            const path = rows[0].filepath;
-            if (fs.existsSync(path)) {
-                fs.unlinkSync(path);
+            const filename = rows[0].filename;
+            const rootDir = process.cwd();
+            let filePath;
+            
+            if (rootDir.endsWith('backend')) {
+                filePath = pathModule.join(rootDir, '..', 'uploads', filename);
+            } else {
+                filePath = pathModule.join(rootDir, 'uploads', filename);
+            }
+
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            } else {
+                console.warn("Файл не найден");
             }
         }
         await db.query('DELETE FROM task_files WHERE id = ?', [fileId]);
-        res.json({ message: "Файлы удален" });
+        res.json({ message: "Файл удален" });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Ошибка удаления файла" });

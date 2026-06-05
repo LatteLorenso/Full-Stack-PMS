@@ -209,17 +209,20 @@ nav {
 }
 
 .btn-save, .btn-cancel {
+    width: 100%;
     padding: 12px 24px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.85rem;
     font-weight: 500;
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, opacity 0.3s ease;
 }
 
-.btn-save { background: var(--color-accent-projects); color: white; width: 600px; }
+.btn-save { background: var(--color-accent-projects); color: white; width: 900px; }
 .btn-cancel { background: var(--color-accent-info); color: white; }
+.btn-cancel.noshow { display: none; }
+.btn-cancel.show { display: block; }
 
 .btn-edit:hover { background: var(--border-color-accent-tasks); color: white; }
 .btn-save:hover { opacity: 0.8; }

@@ -88,19 +88,6 @@ hr {
     font-size: 1rem;
 }
 
-.btn-save, .btn-cancel {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: background 0.3s ease;
-}
-
-.btn-save { background: white; color: white; width: 450px; }
-.btn-cancel { background: var(--color-accent-info); color: white; }
-
 /* Сетка для карточек проектов */
 .projects-mine {
     display: flex;

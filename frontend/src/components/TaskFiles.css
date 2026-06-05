@@ -1,29 +1,50 @@
+:root {
+        /* ===== ШРИФТЫ ===== */
+    --body-font: 'Rajdhani', sans-serif;
+    --code-font: 'JetBrains Mono', monospace;
+
+    /* ===== РАДИУСЫ ===== */
+    --radius-sm: 2px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+
+        /* АКЦЕНТЫ СТРАНИЦ */
+    --color-accent-home: #d1123b;
+    --border-color-accent-home: #b31033;
+    --color-accent-dashboard: #f88809;
+    --color-accent-projects: #23b879;
+    --border-color-accent-projects: #1b8f5e;
+    --color-accent-tasks: #125ed1;
+    --border-color-accent-tasks: #1052b4;
+    --color-accent-info: #505050;
+}
+
 .task-files-container {
-    margin-top: 20px;
-    padding-top: 15px;
+    margin-top: 5px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .task-files-container h4 {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     color: #ccc;
     font-size: 1rem;
 }
 
 .files-list {
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
 .no-files {
-    color: #666;
-    font-style: italic;
-    font-size: 0.9rem;
+    color: var(--color-accent-info);
+    font-weight: 600;
+    font-size: 0.875rem;
 }
 
 .file-item {
+    font-size: 0.9rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -65,8 +86,9 @@
 
 .file-upload-form {
     display: flex;
+    flex-direction: column;
     gap: 10px;
-    align-items: center;
+    align-items: left;
 }
 
 .file-upload-form input[type="file"] {
@@ -81,23 +103,50 @@
 }
 
 .btn-upload {
-    padding: 8px 16px;
-    background: #2ecc71;
+    padding: 12px 24px;
+    background: var(--color-accent-tasks);
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
     white-space: nowrap;
-    transition: background 0.2s;
+    transition: background 0.3s ease;
 }
 
 .btn-upload:hover:not(:disabled) {
-    background: #27ae60;
+    background: var(--border-color-accent-tasks);
 }
 
 .btn-upload:disabled {
-    background: #555;
+    background: var(--color-accent-info);
     color: #888;
-    cursor: not-allowed;
+    cursor: default;
+}
+
+.btn-toggle-files {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-accent-info);
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+    transition: color 0.3s;
+    margin-bottom: 10px;
+}
+
+.btn-toggle-files:hover {
+    color: #c4c4c4;
+}
+
+/* Небольшая анимация появления контента */
+.files-content-wrapper {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }

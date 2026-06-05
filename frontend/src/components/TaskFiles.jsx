@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import api from '../services/api'; // Твой настроенный axios
-import './TaskFiles.css'; // Не забудь создать этот файл со стилями ниже
+import api from '../services/api';
+import './TaskFiles.css';
 
 function TaskFiles({ taskId }) {
     const [files, setFiles] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [isFilesOpen, setIsFilesOpen] = useState(false);
 
-    // Загружаем файлы при открытии компонента или смене задачи
     useEffect(() => {
-        if (taskId) fetchFiles();
-    }, [taskId]);
+        console.log("Загружаем файлы для taskId:", taskId);
+        if (taskId && isFilesOpen) fetchFiles();
+    }, [taskId, isFilesOpen]);
 
     const fetchFiles = async () => {
         try {
@@ -35,7 +36,6 @@ function TaskFiles({ taskId }) {
 
         setIsUploading(true);
         const formData = new FormData();
-        // 'file' должно совпадать с upload.single('file') на бэке!
         formData.append('file', selectedFile);
 
         try {
@@ -44,8 +44,7 @@ function TaskFiles({ taskId }) {
             });
             
             setSelectedFile(null);
-            // Сбрасываем input, чтобы можно было загрузить тот же файл повторно
-            document.getElementById('file-input').value = null; 
+            document.getElementById('file-input').value = null;
             fetchFiles();
         } catch (err) {
             alert(err.response?.data?.error || "Ошибка при загрузке");
@@ -54,61 +53,87 @@ function TaskFiles({ taskId }) {
         }
     };
 
+    const handleCancel = async () => {
+        setSelectedFile(null);
+        const fileInput = document.getElementById('file-input');
+        if (fileInput) {
+            fileInput.value = null;
+        }
+        fetchFiles();
+    };
+
     const handleDelete = async (fileId) => {
         if (!window.confirm("Удалить этот файл?")) return;
         try {
             await api.delete(`/tasks/files/${fileId}`);
             fetchFiles();
         } catch (err) {
-            alert("Ошибка при удалении");
+            console.error("Ошибка при удалении");
         }
     };
 
+    const openTaskFiles = async () => {
+        setIsFilesOpen(true);
+    }
+
     return (
         <div className="task-files-container">
-            <h4>📎 Вложения ({files.length})</h4>
+            <button className="btn-toggle-files" onClick={() => setIsFilesOpen(!isFilesOpen)}>
+                {isFilesOpen ? "Скрыть вложения" : `Вложения (${files.length})`}
+            </button>
 
-            <div className="files-list">
-                {files.length === 0 ? (
-                    <p className="no-files">Нет прикрепленных файлов</p>
-                ) : (
-                    files.map((file) => (
-                        <div key={file.id} className="file-item">
-                            {/* Ссылка на файл. Убедись, что порт бэка верный (3000) */}
-                            <a 
-                                href={`http://localhost:3000/uploads/${file.filename}`} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="file-link"
-                            >
-                                📄 {file.filename}
-                            </a>
-                            <button 
-                                className="btn-file-del" 
-                                onClick={() => handleDelete(file.id)}
-                            >
-                                ×
-                            </button>
-                        </div>
-                    ))
-                )}
-            </div>
-
-            <div className="file-upload-form">
-                <input 
-                    id="file-input"
-                    type="file" 
-                    onChange={handleFileChange} 
-                    disabled={isUploading}
-                />
-                <button 
-                    className="btn-upload" 
-                    onClick={handleUpload} 
-                    disabled={!selectedFile || isUploading}
-                >
-                    {isUploading ? 'Загрузка...' : 'Загрузить'}
-                </button>
-            </div>
+            {isFilesOpen && (
+                <div className="files-content-wrapper">
+                    <div className="files-list">
+                        {files.length === 0 ? (
+                            <p className="no-files">Нет прикрепленных файлов</p>
+                        ) : (
+                            files.map((file) => (
+                                <div key={file.id} className="file-item">
+                                    {/* Ссылка на файл. Убедись, что порт бэка верный (3000) */}
+                                    <a 
+                                        href={`http://localhost:3000/uploads/${file.filename}`} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="file-link"
+                                    >
+                                        📄 {file.filename}
+                                    </a>
+                                    <button 
+                                        className="btn-file-del" 
+                                        onClick={() => handleDelete(file.id)}
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            ))
+                        )}
+                    </div>
+        
+                    <div className="file-upload-form">
+                        <input
+                            id="file-input"
+                            type="file"
+                            onChange={handleFileChange}
+                            disabled={isUploading}
+                        />
+                        <button
+                            className="btn-upload"
+                            onClick={handleUpload}
+                            disabled={!selectedFile || isUploading}
+                        >
+                            {isUploading ? 'Загрузка...' : 'Загрузить'}
+                        </button>
+                        <button
+                            className={selectedFile ? "btn-cancel show" : "btn-cancel noshow"}
+                            onClick={handleCancel}
+                            disabled={!selectedFile || isUploading}
+                        >
+                            Отменить
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
