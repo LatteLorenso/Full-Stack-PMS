@@ -10,8 +10,8 @@ function TaskFiles({ taskId }) {
 
     useEffect(() => {
         console.log("Загружаем файлы для taskId:", taskId);
-        if (taskId && isFilesOpen) fetchFiles();
-    }, [taskId, isFilesOpen]);
+        if (taskId) fetchFiles();
+    }, [taskId]);
 
     const fetchFiles = async () => {
         try {
@@ -90,14 +90,13 @@ function TaskFiles({ taskId }) {
                         ) : (
                             files.map((file) => (
                                 <div key={file.id} className="file-item">
-                                    {/* Ссылка на файл. Убедись, что порт бэка верный (3000) */}
                                     <a 
                                         href={`http://localhost:3000/uploads/${file.filename}`} 
                                         target="_blank" 
                                         rel="noopener noreferrer"
                                         className="file-link"
                                     >
-                                        📄 {file.filename}
+                                        {file.filename}
                                     </a>
                                     <button 
                                         className="btn-file-del" 

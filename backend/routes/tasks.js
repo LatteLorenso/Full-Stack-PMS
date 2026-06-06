@@ -123,29 +123,38 @@ router.put('/:id', authenticate, async (req, res) => {
 // API Эндпоинт DELETE task
 router.delete('/:id', async (req, res) => {
     const db = getDb();
-    const taskId = req.params.id; 
+    const taskId = req.params.id;
+    const pathModule = require('path');
+    const fs = require('fs');
 
     try {
-        // 1. Сначала узнаем project_id задачи
-        const [rows] = await db.query('SELECT project_id FROM tasks WHERE id = ?', [taskId]);
+        const [taskRows] = await db.query('SELECT project_id FROM tasks WHERE id = ?', [taskId]);
+        if (taskRows.length === 0) res.status(404).json({ error: "Задача не найдена" });
 
-        if (rows.length > 0) {
-            const projectId = rows[0].project_id; // 👈 ВОТ ЭТА СТРОКА ВАЖНА!
+        const projectId = taskRows[0].project_id; // 👈 ВОТ ЭТА СТРОКА ВАЖНА!
 
-            // 2. Удаляем задачу
-            await db.query('DELETE FROM tasks WHERE id = ?', [taskId]);
+        const [files] = await db.query('SELECT filename FROM task_files WHERE task_id = ?', [taskId]);
+        const rootDir = process.cwd();
 
-            // 3. Отправляем уведомление
-            const io = req.app.get('io');
-            if (io) {
-                io.to(projectId.toString()).emit('task_deleted', { id: parseInt(taskId) });
-                console.log(`Удаление задачи ${projectId}`);
+        files.forEach(file => {
+            const filePath = pathModule.join(rootDir, '..', 'uploads', file.filename);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            } else {
+                console.warn("Файл не найден");
             }
-            
-            res.json({ message: 'Задача удалена' });
-        } else {
-            res.status(404).json({ error: "Задача не найдена" });
+        });
+
+        await db.query('DELETE FROM task_files WHERE task_id = ?', [taskId])
+
+        await db.query('DELETE FROM tasks WHERE id = ?', [taskId])
+        const io = req.app.get('io');
+        if (io) {
+            io.to(projectId.toString()).emit('task_deleted', { id: parseInt(taskId) });
+            console.log(`Удаление задачи ${projectId}`);
         }
+        
+        res.json({ message: 'Задача и файлы удалены' });
     } catch (err) {
         console.error("Ошибка при удалении:", err);
         res.status(500).json({ error: "Ошибка сервера при удалении" });
