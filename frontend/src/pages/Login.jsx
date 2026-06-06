@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import '../Reg-Log.css';
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -24,41 +25,47 @@ function Login() {
     };
 
     return (
-        <div className="login-page">
-            <h1>Вход в систему</h1>
-
-            {error && <p>{error}</p>}
-
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Логин</label>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
+        <section className="container-log">
+            <section className="login-window">
+                <h1 className="header-text">Вход в систему</h1>
+    
+                {error && <p>{error}</p>}
+    
+                <form onSubmit={handleSubmit} className="form">
+                    <div className="field">
+                        <label>Логин</label>
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="input-field"
+                            required
+                        />
+                    </div>
+    
+                    <div className="field">
+                        <label>Пароль</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="input-field"
+                            required
+                        />
+                    </div>
+    
+                    <div className="container-btn-submit">
+                        <button type="submit">Войти</button>
+                    </div>
+                </form>
+    
+                <div className="text-hint">
+                    <p>
+                        Нет аккаунта? <Link to="/register">Регистрация в системе</Link>
+                    </p>
                 </div>
-
-                <div>
-                    <label>Пароль</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <button type="submit">Войти</button>
-                </div>
-            </form>
-
-            <p>
-                Нет аккаунта? <Link to="/register">Регистрация в системе</Link>
-            </p>
-        </div>
+            </section>
+        </section>
     );
 }
 

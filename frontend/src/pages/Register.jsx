@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import '../Reg-Log.css';
 
 function Register() {
     const [email, setEmail] = useState('');
@@ -25,51 +26,58 @@ function Register() {
     };
 
     return (
-        <div className="register-page">
-            <h1>Регистрация в системе</h1>
+        <section className="container-register">
+            <section className="register-window">
+                <h1 className="header-text">Регистрация в системе</h1>
+    
+                {error && <p>{error}</p>}
+    
+                <form onSubmit={handleSubmit} className="form">
+                    <div className="field">
+                        <label>Эл.почта</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="input-field"
+                            required
+                        />
+                    </div>
+                    
+                    <div className="field">
+                        <label>Пароль</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="input-field"
+                            required
+                        />
+                    </div>
+    
+                    <div className="field">
+                        <label>Имя пользователя</label>
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="input-field"
+                            required
+                        />
+                    </div>
+    
+                    <div className="container-btn-submit">
+                        <button type="submit">Зарегистрироваться</button>
+                    </div>
+                </form>
 
-            {error && <p>{error}</p>}
-
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Эл.почта</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
+                <div className="text-hint">
+                    <p>
+                        Есть аккаунт? <Link to="/login">Войти в систему</Link>
+                    </p>
                 </div>
-                
-                <div>
-                    <label>Пароль</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>Имя пользователя</label>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <button type="submit">Зарегистрироваться</button>
-                </div>
-            </form>
-
-            <p>
-                Есть аккаунт? <Link to="/login">Войти в систему</Link>
-            </p>
-        </div>
+            </section>
+        </section>
     );
 }
 
