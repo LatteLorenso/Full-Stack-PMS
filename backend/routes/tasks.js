@@ -70,7 +70,7 @@ router.post('/', authenticate, async (req, res) => {
     if (io) {
         io.to(project_id.toString()).emit('new_task', {
             id: result.insertId,
-            title,
+            title: title,
             message: `Пользователь ${req.user.username} создал новую задачу!`
         });
         console.log(`Создание задачи ${project_id}`);

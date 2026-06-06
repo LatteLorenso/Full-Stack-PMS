@@ -20,19 +20,19 @@ function Navbar() {
 
     return (
         <nav>
-            <section class="container-nav">
-                <section class="navLinks">
-                    <Link to="/home" class="links-home">Home</Link>
-                    <Link to="/dashboard" class="links-dashboard">Dashboard</Link>
-                    <Link to="/projects" class="links-projects">Projects</Link>
-                    <Link to="/tasks" class="links-tasks">Tasks</Link>
+            <section className="container-nav">
+                <section className="navLinks">
+                    <Link to="/home" className="links-home">Home</Link>
+                    <Link to="/dashboard" className="links-dashboard">Dashboard</Link>
+                    <Link to="/projects" className="links-projects">Projects</Link>
+                    <Link to="/tasks" className="links-tasks">Tasks</Link>
                 </section>
-                <section class="container-user">
+                <section className="container-user">
                     <div className="notification-btn">
                         <NotificationBell />
                     </div>
                     <span>{user?.username} ({user?.role})</span>
-                    <button onClick={handleLogout} class="btn-logout">Logout</button>
+                    <button onClick={handleLogout} className="btn-logout">Logout</button>
                 </section>
             </section>
         </nav>

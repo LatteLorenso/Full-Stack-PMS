@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
+import { socket } from '../services/socket';
 import { useParams, Link } from 'react-router-dom';
 import '../Tasks.css';
 import TaskFiles from '../components/TaskFiles';
 import io from 'socket.io-client';
-
-const socket = io();
 
 function Tasks() {
     const { id } = useParams();
@@ -188,7 +187,7 @@ function TaskItem({ task, onDelete, onUpdate }) {
     const handleUpdate = () => {
         onUpdate(task.id, { title, description, status, assigned_to: assignedTo, due_date: dueDate });
         setIsEditing(false);
-    };
+    }
 
     const formattedDate = task.due_date ? new Date(task.due_date).toLocaleDateString('ru-RU') : 'Не указана';
 
