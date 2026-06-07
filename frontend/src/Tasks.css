@@ -107,7 +107,7 @@
     padding: 16px;
     box-sizing: border-box;
     background: white;
-    border: 1px solid var(--color-accent-info);
+    border: 1px solid transparent;
     border-radius: 6px;
     color: black;
     font-size: 1rem;
@@ -150,7 +150,7 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     box-shadow: 0 10px 30px rgb(0, 0, 0, 0.1);
-    padding: 25px;
+    padding: 35px;
     transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
@@ -171,7 +171,8 @@
     margin-bottom: 12px;
 }
 
-.task-header h3 {
+.task-card-header {
+    width: 95%;
     margin: 0;
     font-family: var(--code-font);
     font-size: 1.5rem;
@@ -231,6 +232,14 @@
 }
 
 /* Кнопки действий в карточке */
+.task-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+}
+
 .btn-edit {
     padding: 12px 24px;
     border: none;

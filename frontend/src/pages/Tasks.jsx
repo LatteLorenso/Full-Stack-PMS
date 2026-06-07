@@ -44,9 +44,12 @@ function Tasks() {
             setTasks(prev => [{
                 id: data.id,
                 title: data.title,
-                description: "",
-                status: "todo",
+                description: data.description || "",
+                status: data.status || "todo",
                 project_id: id,
+                assigned_to: data.assigned_to,
+                due_date: data.due_date,
+                created_by_name: data.username,
                 created_at: new Date().toISOString()
             }, ...prev]);
         }
@@ -54,7 +57,14 @@ function Tasks() {
         // 2. Обновление задачи
         const handleTaskUpdated = (updatedData) => {
             setTasks(prev => prev.map(task => 
-                task.id === updatedData.id ? { ...task, ...updatedData } : task
+                task.id === updatedData.id ? { 
+                    ...task, 
+                    title: updatedData.title,
+                    status: updatedData.status,
+                    assigned_to: updatedData.assigned_to,
+                    due_date: updatedData.due_date,
+                    description: updatedData.description
+                } : task
             ));
         }
 
@@ -63,22 +73,9 @@ function Tasks() {
             setTasks(prev => prev.filter(task => task.id !== data.id));
         }
 
-        // Подписываемся на события
         socket.on('new_task', handleNewTask);
-        socket.on('task_updated', (updatedData) => {
-            setTasks(prev => prev.map(task => 
-                task.id === updatedData.id ? { 
-                    ...task, 
-                    title: updatedData.title,
-                    status: updatedData.status,
-                    assigned_to: updatedData.assigned_to,
-                    due_date: updatedData.due_date,
-                    description: updatedData.description // Теперь тут настоящее описание задачи
-                } : task
-            ));
-        });
+        socket.on('task_updated', handleTaskUpdated);
         socket.on('task_deleted', handleTaskDeleted);
-
         return () => {
             socket.off('new_task', handleNewTask);
             socket.off('task_updated', handleTaskUpdated);
@@ -93,8 +90,8 @@ function Tasks() {
             await api.post('/tasks', { 
                 title, description, status, 
                 project_id: id, 
-                assigned_to: assignedTo || null, 
-                due_date: dueDate || null 
+                assigned_to: assignedTo || null,
+                due_date: dueDate || null
             });
             
             setTitle('');
@@ -192,8 +189,9 @@ function TaskItem({ task, onDelete, onUpdate }) {
     const [status, setStatus] = useState(task.status);
     const [assignedTo, setAssignedTo] = useState(task.assigned_to || '');
     const [dueDate, setDueDate] = useState(task.due_date ? task.due_date.substring(0, 10) : '');
+    
 
-    // 🔥 ВАЖНОЕ ДОБАВЛЕНИЕ: Следим за изменениями task извне
+    // Следим за изменениями task извне
     useEffect(() => {
         setTitle(task.title);
         setDescription(task.description);
@@ -203,7 +201,7 @@ function TaskItem({ task, onDelete, onUpdate }) {
     }, [task]); // Запускается каждый раз, когда объект task обновляется
 
     const handleUpdate = () => {
-        onUpdate(task.id, { title, description, status, assigned_to: assignedTo, due_date: dueDate });
+        onUpdate(task.id, { title, description, status, assigned_to: assignedTo === '' ? null : assignedTo, due_date: dueDate === '' ? null : dueDate });
         setIsEditing(false);
     }
 
@@ -222,12 +220,13 @@ function TaskItem({ task, onDelete, onUpdate }) {
                                 {task.status === 'done' && 'Готово'}
                             </span>
                         </section>
-                        <h3>{task.title}</h3>
+                        <h3 className="task-card-header">{task.title}</h3>
                     </div>
                     <p className="task-desc">{task.description || 'Нет описания'}</p>
                     <div className="task-meta">
                         <div className="meta-item"><span>Исполнитель:</span> <strong>{task.assigned_to || 'Не назначен'}</strong></div>
-                        <div className="meta-item"><span>Срок:</span> <strong>{formattedDate}</strong></div>
+                        <div className="meta-item"><span>Срок:</span> <strong>{formattedDate || 'Не указан'}</strong></div>
+                        <div className="meta-item"><span>Создана:</span> <strong>{task.created_by_name || 'Неизвестно'}</strong></div>
                     </div>
                     <div className="task-actions">
                         <button onClick={() => setIsEditing(true)} className="btn-edit">Изменить</button>

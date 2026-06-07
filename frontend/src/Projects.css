@@ -49,23 +49,23 @@ hr {
     flex-direction: column;
 }
 
-.create-project-form .inputs {
+.container-inputs {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 10px;
     width: 100%;
 }
 
 .create-project-form .btns {
-    margin-top: 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     gap: 10px;
+    margin-top: 15px;
 }
 
-.create-project-form input {
-    padding: 12px;
+.container-inputs input {
+    padding: 16px;
     background: white;
     color: black;
     border: none;

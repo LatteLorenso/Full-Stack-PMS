@@ -90,7 +90,7 @@ router.post('/', authenticate, async (req, res) => {
         });
     }
 
-    res.status(201).json({ id: result.insertId, title, description, status, project_id, assigned_to, due_date });
+    res.status(201).json({ id: result.insertId, title, description, status, project_id, assigned_to, created_by_name: req.user.username, due_date });
 });
 
 // API Эндпоинт PUT update task

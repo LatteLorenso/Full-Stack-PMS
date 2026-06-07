@@ -161,6 +161,7 @@ nav {
     outline: none;
     transition: border-color 0.3s ease;
     box-sizing: border-box;
+    font-family: var(--body-font);
 }
 
 .edit-input.task:focus {
@@ -169,15 +170,6 @@ nav {
 
 .edit-input.project:focus {
     border-color: var(--color-accent-projects, #23b879);
-}
-
-/* Кнопки действий в карточке */
-.task-actions {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 10px;
 }
 
 .btn-del {

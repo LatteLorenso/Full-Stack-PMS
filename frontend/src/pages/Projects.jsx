@@ -131,7 +131,7 @@ function Projects() {
             {showForm && (
                 <section className="container-form">
                     <form onSubmit={createProject} className="create-project-form">
-                        <section className="inputs">
+                        <section className="container-inputs">
                             <input
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
