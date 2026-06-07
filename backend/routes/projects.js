@@ -115,6 +115,13 @@ module.exports = (redisClient) => {
                     await redisClient.del(`projects_user_${uid}`);
                 }
             }
+
+            // Запись в ленту активности
+            const dbForLog = getDb();
+            await dbForLog.query(
+                'INSERT INTO activity_log (user_id, action_type, target_id, description) VALUES (?, ?, ?, ?)',
+                [ownerId, 'create_project', projectId, `Пользователь ${req.user.username} создал проект "${name.trim()}"`]
+            );
     
             res.status(201).json({ id: projectId, name, description, owner_id: ownerId });
     
