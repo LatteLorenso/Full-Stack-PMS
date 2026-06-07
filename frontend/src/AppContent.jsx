@@ -15,9 +15,6 @@ import TaskFiles from './components/TaskFiles';
 const PrivateRoute = ({ children }) => {
     const { token, loading } = useAuth();
 
-    console.log('loading:', loading);
-    console.log('token:', token);
-
     if (loading) return <div>Loading...</div>;
 
     return token ? children : <Navigate to="/login" />;

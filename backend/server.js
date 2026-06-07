@@ -18,7 +18,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
         origin: "http://localhost:5173",
-        methods: ["GET, POST"]
+        methods: ["GET", "POST"]
     }
 });
 
@@ -54,7 +54,7 @@ redisClient.on("error", (err) => console.log('Redis Client Error', err));
             
             // Когда пользователь заходит в проект, он подписывается на его комнату
             socket.on('join_project', (projectId) => {
-                socket.join(projectId);
+                socket.join(projectId.toString());
                 console.log(`User ${socket.id} joined project ${projectId}`);
             });
 

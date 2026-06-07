@@ -7,8 +7,6 @@ function TaskComments({ taskId }) {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [isCommentsOpen, setIsCommentsOpen] = useState(false);
-
-    console.warn(taskId);
     
     // Загрузка комментариев
     const fetchComments = async () => {

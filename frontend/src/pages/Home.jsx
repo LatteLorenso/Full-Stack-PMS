@@ -1,30 +1,92 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
+import { socket } from '../services/socket'; // 👈 Подключаем сокет
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFolder as solFolder } from '@fortawesome/free-solid-svg-icons';
-import { faSquareCheck as solSquareCheck } from '@fortawesome/free-solid-svg-icons';
-import { faMagnifyingGlass as solMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faFolder as solFolder, faSquareCheck as solSquareCheck, faMagnifyingGlass as solMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import '../Home.css';
 
 function Home() {
     const [activities, setActivities] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [loading, setLoading] = useState(true);
 
-    // Имитация загрузки недавней активности (позже подключим реальный API)
     useEffect(() => {
-        // Здесь будет запрос к API за лентой активности
-        const mockActivities = [
-            { id: 1, text: "Вы создали проект 'Новый Сайт'", time: "2 часа назад" },
-            { id: 2, text: "Пользователь Alex добавил комментарий к задаче #42", time: "5 часов назад" },
-            { id: 3, text: "Задача 'Дизайн главной' перемещена в 'Готово'", time: "Вчера" },
-        ];
-        setActivities(mockActivities);
+        let isMounted = true;
+
+        // 1. Инициализация: Загрузка данных и подписка на проекты
+        const initHome = async () => {
+            try {
+                // Загружаем историю и список проектов параллельно
+                const [actRes, projRes] = await Promise.all([
+                    api.get('/activity'),
+                    api.get('/projects')
+                ]);
+
+                if (!isMounted) return;
+
+                // Устанавливаем начальную ленту активности
+                setActivities(actRes.data);
+
+                // Подписываемся на комнаты всех наших проектов
+                let projectsList = [];
+                if (Array.isArray(projRes.data)) projectsList = projRes.data;
+                else if (projRes.data?.projects) projectsList = projRes.data.projects;
+
+                console.log("Home: Подписываюсь на проекты:", projectsList.map(p => p.id));
+                projectsList.forEach(project => {
+                    socket.emit('join_project', project.id);
+                });
+
+            } catch (err) {
+                console.error(err);
+            } finally {
+                if (isMounted) setLoading(false);
+            }
+        };
+
+        initHome();
+
+        // 2. Слушатель событий (Real-time обновления)
+        const handleNewTask = (data) => {
+            console.log("🔥 Home: Получено событие new_task", data);
+            
+            const newActivity = {
+                id: Date.now(),
+                description: `Создана новая задача: "${data.title}"`,
+                user_id: data.user_id,
+                created_at: new Date().toISOString()
+            };
+
+            // Добавляем новое событие в начало списка
+            setActivities(prev => [newActivity, ...prev]);
+        };
+
+        socket.on('new_task', handleNewTask);
+
+        // Очистка при уходе со страницы
+        return () => {
+            isMounted = false;
+            socket.off('new_task', handleNewTask);
+        };
     }, []);
+
+    // Форматирование времени (например: "5 мин. назад")
+    const getTimeAgo = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        const now = new Date();
+        const seconds = Math.floor((now - date) / 1000);
+        if (seconds < 60) return 'только что';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes} мин. назад`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours} ч. назад`;
+        return `${Math.floor(hours / 24)} дн. назад`;
+    };
 
     return (
         <div className="home-container">
-            {/* Секция Приветствия и Поиска */}
             <header className="home-header">
                 <h1>Чем займемся сегодня?</h1>
                 <div className="search-bar">
@@ -34,13 +96,12 @@ function Home() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
-                    <button><span className="search"><FontAwesomeIcon icon={solMagnifyingGlass} /></span></button>
+                    <button><span className="search"><FontAwesomeIcon icon={solMagnifyingGlass} style={{color: "#125ed1"}} /></span></button>
                 </div>
             </header>
 
-            {/* Секция Быстрого Старта */}
             <section className="quick-actions">
-                <Link to="/projects" className="action-card primary">
+                <Link to="/projects/new" className="action-card primary">
                     <span className="icon"><FontAwesomeIcon icon={solFolder} style={{color: "rgb(255, 212, 59)"}} /></span>
                     <h2>Создать проект</h2>
                     <p>Начни что-то новое</p>
@@ -53,20 +114,30 @@ function Home() {
                 </Link>
             </section>
 
-            {/* Секция Недавней Активности */}
             <section className="recent-activity">
                 <h3>Недавняя активность</h3>
-                <div className="activity-list">
-                    {activities.map(item => (
-                        <div key={item.id} className="activity-item">
-                            <div className="activity-dot"></div>
-                            <div className="activity-content">
-                                <p>{item.text}</p>
-                                <span className="activity-time">{item.time}</span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                
+                {loading ? (
+                    <p style={{ textAlign: 'center', color: '#888' }}>Загрузка истории...</p>
+                ) : (
+                    <div className="activity-list">
+                        {activities.length === 0 ? (
+                            <p style={{ textAlign: 'center', color: '#888' }}>Активности пока нет.</p>
+                        ) : (
+                            activities.map(item => (
+                                <div key={item.id} className="activity-item">
+                                    <div className="activity-dot"></div>
+                                    <div className="activity-content">
+                                        <p>{item.description || item.text}</p>
+                                        <span className="activity-time">
+                                            {item.time || getTimeAgo(item.created_at)}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                )}
             </section>
         </div>
     );

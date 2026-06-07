@@ -72,7 +72,7 @@ router.post('/', authenticate, async (req, res) => {
     const dbForLog = getDb();
     await dbForLog.query(
         'INSERT INTO activity_log (user_id, action_type, target_id, description) VALUES (?, ?, ?, ?)',
-        [req.user.id, 'create_task', result.insertId, `Пользователь ${req.user.username} cоздал задачу "${title.trim()}. Статус: ${status}"`]
+        [req.user.id, 'create_task', result.insertId, `Пользователь ${req.user.username} cоздал задачу: "${title.trim()}"`]
     );
 
     // Уведомление для участника о создании задачи

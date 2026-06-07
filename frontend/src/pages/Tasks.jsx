@@ -5,7 +5,6 @@ import { useParams, Link } from 'react-router-dom';
 import '../Tasks.css';
 import TaskFiles from '../components/TaskFiles';
 import TaskComments from '../components/TaskComments';
-import io from 'socket.io-client';
 
 function Tasks() {
     const { id } = useParams();
@@ -41,7 +40,7 @@ function Tasks() {
         socket.emit('join_project', id);
 
         // 1. Новая задача
-        socket.on('new_task', (data) => {
+        const handleNewTask = (data) => {
             setTasks(prev => [{
                 id: data.id,
                 title: data.title,
@@ -50,24 +49,29 @@ function Tasks() {
                 project_id: id,
                 created_at: new Date().toISOString()
             }, ...prev]);
-        });
+        }
 
-        // 2. 🔥 Обновление задачи
-        socket.on('task_updated', (updatedData) => {
+        // 2. Обновление задачи
+        const handleTaskUpdated = (updatedData) => {
             setTasks(prev => prev.map(task => 
                 task.id === updatedData.id ? { ...task, ...updatedData } : task
             ));
-        });
+        }
 
-        // 3. 🔥 Удаление задачи
-        socket.on('task_deleted', (data) => {
+        // 3. Удаление задачи
+        const handleTaskDeleted = (data) => {
             setTasks(prev => prev.filter(task => task.id !== data.id));
-        });
+        }
+
+        // Подписываемся на события
+        socket.on('new_task', handleNewTask);
+        socket.on('task_updated', handleTaskUpdated);
+        socket.on('task_deleted', handleTaskDeleted);
 
         return () => {
-            socket.off('new_task');
-            socket.off('task_updated');   // 👈 Не забываем чистить
-            socket.off('task_deleted');   // 👈 И этот тоже
+            socket.off('new_task', handleNewTask);
+            socket.off('task_updated', handleTaskUpdated);
+            socket.off('task_deleted', handleTaskDeleted);
         };
     }, [id]);
 
@@ -221,7 +225,6 @@ function TaskItem({ task, onDelete, onUpdate }) {
                 </>
             ) : (
                 <div className="edit-mode">
-                    {/* Название */}
                     <input 
                         className="edit-input task" 
                         defaultValue={title} 
@@ -229,7 +232,6 @@ function TaskItem({ task, onDelete, onUpdate }) {
                         placeholder="Название задачи" 
                     />
                 
-                    {/* Описание - лучше использовать textarea для многострочного текста */}
                     <textarea 
                         className="edit-input task" 
                         defaultValue={description} 
@@ -238,7 +240,6 @@ function TaskItem({ task, onDelete, onUpdate }) {
                         rows="3"
                     />
                 
-                    {/* Статус */}
                     <select 
                         className="edit-input task" 
                         value={status} 
@@ -249,7 +250,6 @@ function TaskItem({ task, onDelete, onUpdate }) {
                         <option value="done">Готово</option>
                     </select>
                 
-                    {/* Исполнитель */}
                     <input 
                         className="edit-input task" 
                         defaultValue={assignedTo} 
@@ -257,7 +257,6 @@ function TaskItem({ task, onDelete, onUpdate }) {
                         placeholder="ID исполнителя" 
                     />
                 
-                    {/* Дата */}
                     <input 
                         className="edit-input task" 
                         type="date" 

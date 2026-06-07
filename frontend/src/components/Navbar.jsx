@@ -14,10 +14,6 @@ function Navbar() {
         navigate('/login');
     };
 
-    useEffect(() => {
-        console.log("Рендер");
-    });
-
     return (
         <nav>
             <section className="container-nav">
