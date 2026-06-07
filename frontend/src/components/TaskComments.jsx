@@ -6,6 +6,7 @@ import './TaskComments.css';
 function TaskComments({ taskId }) {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
+    const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 
     console.warn(taskId);
     
@@ -62,32 +63,44 @@ function TaskComments({ taskId }) {
         }
     };
 
+    const openTaskComments = async () => {
+        setIsCommentsOpen(true);
+    }
+
     return (
         <div className="comments-section">
-            <h3>Комментарии ({comments.length})</h3>
+            <button className="btn-toggle-comments" onClick={() => setIsCommentsOpen(!isCommentsOpen)}>
+                {isCommentsOpen ? "Скрыть комментарии" : `Комментарии (${comments.length})`}
+            </button>
             
-            <div className="comments-list">
-                {comments.map(comment => (
-                    <div key={comment.id} className="comment-item">
-                        <div className="comment-header">
-                            <strong>{comment.username}</strong>
-                            <small>{new Date(comment.created_at).toLocaleString()}</small>
-                        </div>
-                        <p className="comment-text">{comment.content}</p>
+            {isCommentsOpen && (
+                <section className="container-comments">
+                    <div className="comments-list">
+                        {comments.map(comment => (
+                            <div key={comment.id} className="comment-item">
+                                <div className="comment-header">
+                                    <strong>{comment.username}</strong>
+                                    <small>{new Date(comment.created_at).toLocaleString()}</small>
+                                </div>
+                                <p className="comment-text">{comment.content}</p>
+                            </div>
+                        ))}
                     </div>
-                ))}
-            </div>
-
-            <form onSubmit={handleSubmit} className="comment-form">
-                <textarea 
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Напишите комментарий..."
-                    rows="2"
-                    required
-                />
-                <button type="submit">Отправить</button>
-            </form>
+                    
+                    <form onSubmit={handleSubmit} className="comment-form">
+                        <textarea 
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            placeholder="Напишите комментарий..."
+                            rows="2"
+                            required
+                        />
+                        <div className="comment-actions">
+                            <button type="submit">Отправить</button>
+                        </div>
+                    </form>
+                </section>
+            )}
         </div>
     );
 }

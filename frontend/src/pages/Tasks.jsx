@@ -150,7 +150,6 @@ function Tasks() {
                     </form>
                 </div>
             )}
-            <hr />
 
             <section className="tasks-mine">
                 <div className="tasks-grid">

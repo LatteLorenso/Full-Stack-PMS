@@ -77,7 +77,7 @@ function TaskFiles({ taskId }) {
     }
 
     return (
-        <div className="task-files-container">
+        <div className="files-section">
             <button className="btn-toggle-files" onClick={() => setIsFilesOpen(!isFilesOpen)}>
                 {isFilesOpen ? "Скрыть вложения" : `Вложения (${files.length})`}
             </button>
