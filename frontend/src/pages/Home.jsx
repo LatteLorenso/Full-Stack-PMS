@@ -8,6 +8,8 @@ import '../Home.css';
 
 function Home() {
     const [activities, setActivities] = useState([]);
+    const [projects, setProjects] = useState([]);
+    // Поиск по проектам
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
 
@@ -22,6 +24,8 @@ function Home() {
                     api.get('/activity'),
                     api.get('/projects')
                 ]);
+                console.log(actRes.data);
+                console.log(projRes.data);
 
                 if (!isMounted) return;
 
@@ -32,6 +36,8 @@ function Home() {
                 let projectsList = [];
                 if (Array.isArray(projRes.data)) projectsList = projRes.data;
                 else if (projRes.data?.projects) projectsList = projRes.data.projects;
+
+                setProjects(projectsList);
 
                 console.log("Home: Подписываюсь на проекты:", projectsList.map(p => p.id));
                 projectsList.forEach(project => {
@@ -119,6 +125,18 @@ function Home() {
         };
     }, []);
 
+    // Фильтрация проектов
+    const filteredProjects = projects.filter(project =>
+        project.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Фильтрация активность по описанию
+    const filteredActivities = activities.filter(activity =>
+        activity.description && activity.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const isSearching = searchQuery.trim().length > 0;
+
     // Форматирование времени (например: "5 мин. назад")
     const getTimeAgo = (dateString) => {
         if (!dateString) return "";
@@ -148,45 +166,81 @@ function Home() {
                 </div>
             </header>
 
-            <section className="quick-actions">
-                <Link to="/projects" className="action-card primary">
-                    <span className="icon"><FontAwesomeIcon icon={solFolder} style={{color: "rgb(255, 212, 59)"}} /></span>
-                    <h2>Создать проект</h2>
-                    <p>Начни что-то новое</p>
-                </Link>
-                
-                <Link to="/tasks" className="action-card secondary">
-                    <span className="icon"><FontAwesomeIcon icon={solSquareCheck} style={{color: "#23b879"}} /></span>
-                    <h2>Мои задачи</h2>
-                    <p>Посмотреть список дел</p>
-                </Link>
-            </section>
-
-            <section className="recent-activity">
-                <h3>Недавняя активность</h3>
-                
-                {loading ? (
-                    <p style={{ textAlign: 'center', color: '#888' }}>Загрузка истории...</p>
-                ) : (
-                    <div className="activity-list">
-                        {activities.length === 0 ? (
-                            <p style={{ textAlign: 'center', color: '#888' }}>Активности пока нет.</p>
-                        ) : (
-                            activities.map(item => (
-                                <div key={item.id} className="activity-item">
-                                    <div className="activity-dot"></div>
-                                    <div className="activity-content">
-                                        <p>{item.description || item.text}</p>
-                                        <span className="activity-time">
-                                            {item.time || getTimeAgo(item.created_at)}
-                                        </span>
+            {isSearching ? (
+                <section className="search-results-container">
+                    <section className="search-section">
+                        <h3>Найденные проекты ({filteredProjects.length})</h3>
+                        <div className="projects-grid">
+                            {filteredProjects.map(project => (
+                                <Link to={`/projects/${project.id}`} key={project.id} className="project-card-link">
+                                    <div className="action-card secondary search-hit">
+                                        <h4>{project.name}</h4>
+                                        <p>{project.description || 'Нет описания'}</p>
                                     </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                )}
-            </section>
+                                </Link>
+                            ))}
+                            {filteredProjects.length === 0 && <p>Проекты не найдены</p>}
+                        </div>
+                    </section>
+                    
+                    <section className="search-section">
+                        <h3>Найденные проекты ({filteredProjects.length})</h3>
+                        <div className="projects-grid">
+                            {filteredProjects.map(project => (
+                                <Link to={`/projects/${project.id}`} key={project.id} className="project-card-link">
+                                    <div className="action-card secondary search-hit">
+                                        <h4>{project.name}</h4>
+                                        <p>{project.description || 'Нет описания'}</p>
+                                    </div>
+                                </Link>
+                            ))}
+                            {filteredProjects.length === 0 && <p>Проекты не найдены</p>}
+                        </div>
+                    </section>
+                </section>
+            ) : (
+                <>
+                <section className="quick-actions">
+                    <Link to="/projects" className="action-card primary">
+                        <span className="icon"><FontAwesomeIcon icon={solFolder} style={{color: "rgb(255, 212, 59)"}} /></span>
+                        <h2>Создать проект</h2>
+                        <p>Начни что-то новое</p>
+                    </Link>
+                    
+                    <Link to="" className="action-card secondary">
+                        <span className="icon"><FontAwesomeIcon icon={solSquareCheck} style={{color: "#23b879"}} /></span>
+                        <h2>Мои задачи</h2>
+                        <p>Посмотреть список дел</p>
+                    </Link>
+                </section>
+    
+                <section className="recent-activity">
+                    <h3>Недавняя активность</h3>
+                    
+                    {loading ? (
+                        <p style={{ textAlign: 'center', color: '#888' }}>Загрузка истории...</p>
+                    ) : (
+                        <div className="activity-list">
+                            {activities.length === 0 ? (
+                                <p style={{ textAlign: 'center', color: '#888' }}>Активности пока нет.</p>
+                            ) : (
+                                activities.map(item => (
+                                    <div key={item.id} className="activity-item">
+                                        <div className="activity-dot"></div>
+                                        <div className="activity-content">
+                                            <p>{item.description || item.text}</p>
+                                            <span className="activity-time">
+                                                {item.time || getTimeAgo(item.created_at)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    )}
+                </section>
+            </>
+        )}
         </div>
     );
 }
