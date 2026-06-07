@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
-import { socket } from '../services/socket'; // 👈 Подключаем сокет
+import { socket } from '../services/socket';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolder as solFolder, faSquareCheck as solSquareCheck, faMagnifyingGlass as solMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import '../Home.css';
@@ -47,27 +47,75 @@ function Home() {
 
         initHome();
 
-        // 2. Слушатель событий (Real-time обновления)
+        // 2. Слушатель событий
         const handleNewTask = (data) => {
-            console.log("🔥 Home: Получено событие new_task", data);
-            
             const newActivity = {
                 id: Date.now(),
-                description: `Создана новая задача: "${data.title}"`,
-                user_id: data.user_id,
+                description: data.logDescription || `Задача "${data.title}" создана`,
                 created_at: new Date().toISOString()
             };
-
-            // Добавляем новое событие в начало списка
             setActivities(prev => [newActivity, ...prev]);
         };
 
-        socket.on('new_task', handleNewTask);
+        // 3. Слушатель ОБНОВЛЕНИЯ задачи
+        const handleTaskUpdated = (data) => {
+            const newActivity = {
+                id: Date.now(),
+                description: data.logDescription || `Задача "${data.title}" обновлена`,
+                user_id: data.user_id,
+                created_at: new Date().toISOString()
+            };
+            setActivities(prev => [newActivity, ...prev]);
+        };
 
-        // Очистка при уходе со страницы
+        // 4. Слушатель УДАЛЕНИЯ задачи 
+        const handleTaskDeleted = (data) => {
+            const newActivity = {
+                id: Date.now(),
+                description: data.logDescription || `Задача "${data.title}" удалена`,
+                user_id: data.user_id,
+                created_at: new Date().toISOString()
+            };
+            setActivities(prev => [newActivity, ...prev]);
+        };
+
+        // 5. Слушатель ДОБАВЛЕНИЯ файла в задаче
+        const handleTaskFileAdded = (data) => {
+            const newActivity = {
+                id: Date.now(),
+                description: data.logDescription || `Задача "${data.title}" была дополнена файлом`,
+                user_id: data.user_id,
+                created_at: new Date().toISOString()
+            };
+            setActivities(prev => [newActivity, ...prev]);
+        };
+
+        // 6. Слушатель УДАЛЕНИЯ файла в задаче
+        const handleTaskFileRemoved = (data) => {
+            const newActivity = {
+                id: Date.now(),
+                description: data.logDescription || `Из задачи "${data.title}" был удален файл`,
+                user_id: data.user_id,
+                created_at: new Date().toISOString()
+            };
+            setActivities(prev => [newActivity, ...prev]);
+        };
+
+        // Подключаем оба слушателя
+        socket.on('new_task', handleNewTask);
+        socket.on('task_updated', handleTaskUpdated);
+        socket.on('task_deleted', handleTaskDeleted);
+        socket.on('task_file_added', handleTaskFileAdded);
+        socket.on('task_file_deleted', handleTaskFileRemoved);
+
+        // Очистка
         return () => {
             isMounted = false;
             socket.off('new_task', handleNewTask);
+            socket.off('task_updated', handleTaskUpdated);
+            socket.off('task_deleted', handleTaskDeleted);
+            socket.off('task_file_added', handleTaskFileAdded);
+            socket.off('task_file_deleted', handleTaskFileRemoved);
         };
     }, []);
 

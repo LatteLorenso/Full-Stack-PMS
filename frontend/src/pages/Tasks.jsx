@@ -65,7 +65,18 @@ function Tasks() {
 
         // Подписываемся на события
         socket.on('new_task', handleNewTask);
-        socket.on('task_updated', handleTaskUpdated);
+        socket.on('task_updated', (updatedData) => {
+            setTasks(prev => prev.map(task => 
+                task.id === updatedData.id ? { 
+                    ...task, 
+                    title: updatedData.title,
+                    status: updatedData.status,
+                    assigned_to: updatedData.assigned_to,
+                    due_date: updatedData.due_date,
+                    description: updatedData.description // Теперь тут настоящее описание задачи
+                } : task
+            ));
+        });
         socket.on('task_deleted', handleTaskDeleted);
 
         return () => {
@@ -174,19 +185,22 @@ function Tasks() {
 // Внутренний компонент для одной карточки задачи
 function TaskItem({ task, onDelete, onUpdate }) {
     const [isEditing, setIsEditing] = useState(false);
+    
+    // Инициализируем стейты текущими значениями
     const [title, setTitle] = useState(task.title);
     const [description, setDescription] = useState(task.description);
     const [status, setStatus] = useState(task.status);
     const [assignedTo, setAssignedTo] = useState(task.assigned_to || '');
-    const [dueDate, setDueDate] = useState(task.due_date ? task.due_date.split('T')[0] : '');
+    const [dueDate, setDueDate] = useState(task.due_date ? task.due_date.substring(0, 10) : '');
 
+    // 🔥 ВАЖНОЕ ДОБАВЛЕНИЕ: Следим за изменениями task извне
     useEffect(() => {
         setTitle(task.title);
         setDescription(task.description);
         setStatus(task.status);
         setAssignedTo(task.assigned_to || '');
-        setDueDate(task.due_date ? task.due_date.split('T')[0] : '');
-    }, [task]);
+        setDueDate(task.due_date ? task.due_date.substring(0, 10) : '');
+    }, [task]); // Запускается каждый раз, когда объект task обновляется
 
     const handleUpdate = () => {
         onUpdate(task.id, { title, description, status, assigned_to: assignedTo, due_date: dueDate });
@@ -227,14 +241,14 @@ function TaskItem({ task, onDelete, onUpdate }) {
                 <div className="edit-mode">
                     <input 
                         className="edit-input task" 
-                        defaultValue={title} 
+                        value={title} 
                         onChange={(e) => setTitle(e.target.value)} 
                         placeholder="Название задачи" 
                     />
                 
                     <textarea 
                         className="edit-input task" 
-                        defaultValue={description} 
+                        value={description} 
                         onChange={(e) => setDescription(e.target.value)} 
                         placeholder="Описание задачи"
                         rows="3"
@@ -252,7 +266,7 @@ function TaskItem({ task, onDelete, onUpdate }) {
                 
                     <input 
                         className="edit-input task" 
-                        defaultValue={assignedTo} 
+                        value={assignedTo} 
                         onChange={(e) => setAssignedTo(e.target.value)} 
                         placeholder="ID исполнителя" 
                     />
@@ -260,7 +274,7 @@ function TaskItem({ task, onDelete, onUpdate }) {
                     <input 
                         className="edit-input task" 
                         type="date" 
-                        defaultValue={dueDate ? dueDate.split('T')[0] : ''} 
+                        value={dueDate ? dueDate.split('T')[0] : ''} 
                         onChange={(e) => setDueDate(e.target.value)} 
                     />
                 
