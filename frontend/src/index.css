@@ -51,7 +51,12 @@
 
 * {
     box-sizing: border-box;
+}
+
+html
+{
     scroll-behavior: smooth;
+    scrollbar-color: rgba(16, 82, 180, 1) white;
 }
 
 input {
@@ -76,19 +81,19 @@ body
 
 nav {
     position: sticky;
-    top: 0;
+    top: 10px;
     padding: 0.625rem;
     color: white;
     background-color: var(--color-bg-header);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(10px);
     border-radius: 10px;
+    z-index: 2000;
 }
 
 .container-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 2000;
 }
 
 .navLinks {
