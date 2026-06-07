@@ -182,19 +182,20 @@ function Home() {
                             {filteredProjects.length === 0 && <p>Проекты не найдены</p>}
                         </div>
                     </section>
-                    
+
                     <section className="search-section">
-                        <h3>Найденные проекты ({filteredProjects.length})</h3>
-                        <div className="projects-grid">
-                            {filteredProjects.map(project => (
-                                <Link to={`/projects/${project.id}`} key={project.id} className="project-card-link">
-                                    <div className="action-card secondary search-hit">
-                                        <h4>{project.name}</h4>
-                                        <p>{project.description || 'Нет описания'}</p>
+                        <h3>Активность ({filteredActivities.length})</h3>
+                        <div className="activity-list">
+                            {filteredActivities.map(item => (
+                                <div key={item.id} className="activity-item search-hit">
+                                    <div className="activity-dot"></div>
+                                    <div className="activity-content">
+                                        <p>{item.description}</p>
+                                        <span className="activity-time">{getTimeAgo(item.created_at)}</span>
                                     </div>
-                                </Link>
+                                </div>
                             ))}
-                            {filteredProjects.length === 0 && <p>Проекты не найдены</p>}
+                            {filteredActivities.length === 0 && <p>События не найдены</p>}
                         </div>
                     </section>
                 </section>
