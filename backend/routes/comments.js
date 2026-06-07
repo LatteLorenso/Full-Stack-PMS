@@ -6,7 +6,7 @@ const router = express.Router();
 
 // API Эндпоинт GET comments for a task
 router.get('/task/:taskId', authenticate, async (req, res) => {
-    const taskId = req.params.id;
+    const { taskId } = req.params;
     const db = getDb();
 
     try {
@@ -18,6 +18,7 @@ router.get('/task/:taskId', authenticate, async (req, res) => {
         );
         res.json(rows);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: "Ошибка получения комментариев" });
     }
 });
@@ -70,6 +71,7 @@ router.post('/', authenticate, async (req, res) => {
     
         res.status(201).json({ id: result.insertId, content, task_id: taskId, user_id: req.user.id, username: req.user.username });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: "Ошибка создания комментария" });
     }
 });

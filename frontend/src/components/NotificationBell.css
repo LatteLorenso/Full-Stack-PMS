@@ -53,6 +53,7 @@
     z-index: 1000;
     margin-top: 5px;
     overflow-y: auto;
+    cursor: auto;
 }
 
 .menu-header {

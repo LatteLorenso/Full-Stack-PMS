@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS comments (
     task_id INT,
     user_id INT,
     content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );

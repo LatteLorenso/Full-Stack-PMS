@@ -4,6 +4,7 @@ import { socket } from '../services/socket';
 import { useParams, Link } from 'react-router-dom';
 import '../Tasks.css';
 import TaskFiles from '../components/TaskFiles';
+import TaskComments from '../components/TaskComments';
 import io from 'socket.io-client';
 
 function Tasks() {
@@ -216,6 +217,7 @@ function TaskItem({ task, onDelete, onUpdate }) {
                     </div>
                     <section className="task-details">
                         <TaskFiles taskId={task.id} />
+                        <TaskComments taskId={task.id} />
                     </section>
                 </>
             ) : (
