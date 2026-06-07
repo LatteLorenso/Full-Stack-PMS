@@ -1,6 +1,8 @@
 const express = require('express');
 const { getDb } = require('../db/db');
 const { authenticate } = require('../middleware/auth');
+const pathModule = require('path');
+const fs = require('fs');
 
 module.exports = (redisClient) => {
     const router = express.Router();
@@ -234,10 +236,27 @@ module.exports = (redisClient) => {
         }
 
         const [members] = await db.query('SELECT user_id FROM project_members WHERE project_id = ?', [projectId]);
-    
-        await db.query(
-            'DELETE FROM projects WHERE id = ?', [projectId]
+
+        const [files] = await db.query(
+            `SELECT tf.filename
+            FROM task_files tf
+            JOIN tasks t ON tf.task_id = t.id
+            WHERE t.project_id = ?`, [projectId]
         );
+        if (files.length === 0) {
+            return res.status(404).json({ error: "Файл не найден" });
+        }
+        const taskId = files.task_id;
+        const rootDir = process.cwd();
+
+        files.forEach(file => {
+            const filePath = pathModule.join(rootDir, '..', 'uploads', file.filename);
+            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        });
+
+        await db.query('DELETE FROM task_files WHERE task_id = ?', [taskId]);
+    
+        await db.query('DELETE FROM projects WHERE id = ?', [projectId]);
     
         await redisClient.del(`projects_user_${project.owner_id}`); 
         for (const m of members) {

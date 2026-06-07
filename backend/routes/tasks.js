@@ -145,9 +145,9 @@ router.put('/:id', authenticate, async (req, res) => {
 
     let activityDescription = "";
     if (changes.length > 0) {
-        activityDescription = `Задача "${task.title.trim()}": обновлено ${changes.join(', ')}`;
+        activityDescription = `Задача: "${task.title.trim()}". обновлено ${changes.join(', ')}`;
     } else {
-        activityDescription = `Задача "${task.title.trim()}" была обновлена`;
+        activityDescription = `Задача: "${task.title.trim()}". была обновлена`;
     }
 
     // Запись в ленту активности
@@ -187,6 +187,10 @@ router.delete('/:id', authenticate, async (req, res) => {
 
         const projectId = taskRows[0].project_id;
         const taskTitle = taskRows[0].title;
+
+        if (req.user.role !== 'admin' && project.owner_id !== req.user.id) {
+            return res.status(403).json({ error: "В разрешении отказано" });
+        }
         
         // Удаляем файлы с диска и из БД
         const [files] = await db.query('SELECT filename FROM task_files WHERE task_id = ?', [taskId]);

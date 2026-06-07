@@ -10,19 +10,70 @@ function NotificationBell() {
     const [isOpen, setIsOpen] = useState(false);
     
     useEffect(() => {
+        // Слушатель новой задачи
         const handleNewTask = (data) => {
             setCount(prev => prev + 1);
             setNotifications(prev => [{
                 id: Date.now(),
-                message: data.message || `Новая задача ${data.title}`,
+                message: data.logDescription || `Новая задача: "${data.title}"`,
                 time: new Date().toLocaleTimeString()
             }, ...prev]);
         };
 
-        socket.on('new_task', handleNewTask); // Включаем слушатель
+        // Слушатель ОБНОВЛЕНИЯ задачи
+        const handleTaskUpdated = (data) => {
+            setCount(prev => prev + 1);
+            setNotifications(prev => [{
+                id: Date.now(),
+                message: data.logDescription || `Задача: "${data.title}" обновлена`,
+                time: new Date().toLocaleTimeString()
+            }, ...prev]);
+        };
 
+        // Слушатель УДАЛЕНИЯ задачи 
+        const handleTaskDeleted = (data) => {
+            setCount(prev => prev + 1);
+            setNotifications(prev => [{
+                id: Date.now(),
+                message: data.logDescription || `Задача: "${data.title}" удалена`,
+                time: new Date().toLocaleTimeString()
+            }, ...prev]);
+        };
+
+        // Слушатель ДОБАВЛЕНИЯ файла в задаче
+        const handleTaskFileAdded = (data) => {
+            setCount(prev => prev + 1);
+            setNotifications(prev => [{
+                id: Date.now(),
+                message: data.logDescription || `Задача: "${data.title}" дополнилась файлом`,
+                time: new Date().toLocaleTimeString()
+            }, ...prev]);
+        };
+
+        // Слушатель УДАЛЕНИЯ файла в задаче
+        const handleTaskFileRemoved = (data) => {
+            setCount(prev => prev + 1);
+            setNotifications(prev => [{
+                id: Date.now(),
+                message: data.logDescription || `В задаче: "${data.title}" удалился файл`,
+                time: new Date().toLocaleTimeString()
+            }, ...prev]);
+        };
+
+        // Подключаем оба слушателя
+        socket.on('new_task', handleNewTask);
+        socket.on('task_updated', handleTaskUpdated);
+        socket.on('task_deleted', handleTaskDeleted);
+        socket.on('task_file_added', handleTaskFileAdded);
+        socket.on('task_file_deleted', handleTaskFileRemoved);
+
+        // Очистка
         return () => {
-            socket.off('new_task', handleNewTask); // Отключаем слушатель
+            socket.off('new_task', handleNewTask);
+            socket.off('task_updated', handleTaskUpdated);
+            socket.off('task_deleted', handleTaskDeleted);
+            socket.off('task_file_added', handleTaskFileAdded);
+            socket.off('task_file_deleted', handleTaskFileRemoved);
         };
     }, []);
 

@@ -170,9 +170,9 @@ function Home() {
                 <section className="search-results-container">
                     <section className="search-section">
                         <h3>Найденные проекты ({filteredProjects.length})</h3>
-                        <div className="projects-grid">
+                        <div className="search-projects-grid">
                             {filteredProjects.map(project => (
-                                <Link to={`/projects/${project.id}`} key={project.id} className="project-card-link">
+                                <Link to={`/projects/${project.id}/tasks`} key={project.id} className="project-card-link">
                                     <div className="action-card secondary search-hit">
                                         <h4>{project.name}</h4>
                                         <p>{project.description || 'Нет описания'}</p>
