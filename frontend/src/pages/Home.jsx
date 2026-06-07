@@ -149,7 +149,7 @@ function Home() {
             </header>
 
             <section className="quick-actions">
-                <Link to="/projects/new" className="action-card primary">
+                <Link to="/projects" className="action-card primary">
                     <span className="icon"><FontAwesomeIcon icon={solFolder} style={{color: "rgb(255, 212, 59)"}} /></span>
                     <h2>Создать проект</h2>
                     <p>Начни что-то новое</p>

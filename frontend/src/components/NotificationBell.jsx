@@ -37,8 +37,8 @@ function NotificationBell() {
         <section className="icon-notification">
             <span onClick={handleOpen} className="btn-open">
                 {count === 0 ? 
-                    <FontAwesomeIcon icon={regularBell} style={{ color: "#008cff", fontSize: "1.7rem" }} /> : 
-                    <FontAwesomeIcon icon={solidBell} style={{ color: "#ff4757", fontSize: "1.7rem" }} />
+                    <span className="icon-regular"><FontAwesomeIcon icon={regularBell} style={{ fontSize: "1.6rem" }} /></span> : 
+                    <span className="icon-solid"><FontAwesomeIcon icon={solidBell} style={{ fontSize: "1.6rem" }} /></span>
                 }
                 {count > 0 && (
                     <span className="btn-count">{count}</span>

@@ -21,7 +21,6 @@ function Navbar() {
                     <Link to="/home" className="links-home">Home</Link>
                     <Link to="/dashboard" className="links-dashboard">Dashboard</Link>
                     <Link to="/projects" className="links-projects">Projects</Link>
-                    <Link to="/tasks" className="links-tasks">Tasks</Link>
                 </section>
                 <section className="container-user">
                     <div className="notification-btn">
