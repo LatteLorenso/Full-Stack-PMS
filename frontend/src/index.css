@@ -140,28 +140,6 @@ nav {
 
 .btn-logout:hover { background-color: white; color: black; }
 
-/* Основная страница Home */
-.container-hero {
-    margin-top: 50px;
-}
-
-.section-hero-text h1 {
-    text-align: center;
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 1.6;
-    margin: 10px;
-}
-
-.section-hero-text p {
-    text-align: center;
-    font-size: 1.4rem;
-    font-weight: 500;
-    line-height: 1.6;
-    margin: 0;
-    font-family: var(--code-font);
-}
-
 /* Стили для Projects & Tasks */
 
 /* Поля ввода (универсальные) */
