@@ -79,10 +79,9 @@ body
     overflow-x: hidden;
 }
 
-nav {
+.navbar {
     position: sticky;
     top: 10px;
-    padding: 0.625rem;
     color: white;
     background-color: var(--color-bg-header);
     backdrop-filter: blur(10px);
@@ -90,28 +89,42 @@ nav {
     z-index: 2000;
 }
 
-.container-nav {
+.container-navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 15px 0;
 }
 
-.navLinks {
+.nav-menu {
+    margin: 0;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+    text-align: center;
+}
+
+/* .navLinks {
     display: flex;
     gap: 0.625rem;
     font-family: var(--body-font);
     font-weight: 600;
-}
+} */
 
 .links-home,
 .links-dashboard,
 .links-projects,
 .links-tasks {
+    display: flex;
+    flex-direction: row;
     text-decoration: none;
     color: white;
     border-radius: 4px;
     padding: 8px 12px;
-    transition: background-color 0.3 ease;
+    transition: all 0.3 ease;
 }
 
 .links-home:hover { background: var(--color-accent-home); }
@@ -124,7 +137,12 @@ nav {
 
 .links:hover { background-color: var(--color-accent-question); }
 
+.menu-icon {
+    display: none;
+}
+
 .container-user {
+    padding-right: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -258,62 +276,89 @@ nav {
 
 /* Адаптивность для мобильных */
 @media (max-width: 450px) {
-    .burger {
-        display: flex;
+    .container-navbar {
+        padding: 15px 0;
+        width: 100%;
+        justify-content: right;
     }
 
-    nav {
-    position: sticky;
-    top: 10px;
-    padding: 0.625rem;
-    color: white;
-    background-color: var(--color-bg-header);
-    backdrop-filter: blur(10px);
-    border-radius: 10px;
-    z-index: 2000;
-}
+    .menu-icon {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        justify-items: center;
+        align-items: center;
+        transform: translate(-975%, 30%);
+        font-size: 1.8rem;
+        cursor: pointer;
+        color: white;
+    }
 
-.container-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    .nav-menu {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 30vh;
+        border-radius: 16px;
+        box-shadow: 0 15px 25px rgba(204, 204, 204, 0.5);
+        position: absolute;
+        top: 110%;
+        /* left: -105%; */
+        opacity: 1;
+        transition: all 0.3s ease;
+        background: white;
+        gap: 10px;
+        list-style: none;
+        text-align: center;
+    }
 
-.navLinks {
-    display: flex;
-    gap: 0.625rem;
-    font-family: var(--body-font);
-    font-weight: 600;
-}
+    .nav-item {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .nav-menu.active {
+        padding-left: 15px;
+        display: none;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        list-style: none;
+        text-align: center;
+    }
+
+    .container-user {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        font-family: var(--code-font);
+        font-weight: 500;
+    }
+
+    .user-profile {
+        display: none;
+    }
 
 .links-home,
 .links-dashboard,
 .links-projects,
 .links-tasks {
     text-decoration: none;
-    color: white;
+    color: black;
     border-radius: 4px;
     padding: 8px 12px;
-    transition: background-color 0.3 ease;
 }
 
-.links-home:hover { background: var(--color-accent-home); }
+.links-home:hover, .links-dashboard:hover, .links-projects:hover, .links-tasks:hover { color: white; }
 
-.links-dashboard:hover { background: var(--color-accent-dashboard); }
-
-.links-projects:hover { background: var(--color-accent-projects); }
-
-.links-tasks:hover { background: var(--color-accent-tasks); }
-
-.links:hover { background-color: var(--color-accent-question); }
-
-.container-user {
+.container-btn-logout {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    font-family: var(--code-font);
-    font-weight: 500;
+    justify-content: right;
 }
 
 .btn-logout {
@@ -327,5 +372,4 @@ nav {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.btn-logout:hover { background-color: white; color: black; }
 }

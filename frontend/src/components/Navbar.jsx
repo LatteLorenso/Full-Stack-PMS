@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import Projects from '../pages/Projects';
 import NotificationBell from './NotificationBell';
 import './NotificationBell.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -23,29 +22,33 @@ function Navbar() {
 
     return (
         <nav className="navbar">
+            <section className="menu-icon" onClick={toggleMenu}>
+                    <FontAwesomeIcon icon={faBars} />
+            </section>
             <section className="container-navbar">
 
-                <section className="menu-icon" onClick={toggleMenu}>
-                    <FontAwesomeIcon icon={faBars} />
-                </section>
-
-                <ul className={isOpen ? "nav-menu active" : "nav menu"}>
-                    <li className="nav-item">
+                <ul className={isOpen ? "nav-menu active" : "nav-menu"}>
+                    <div className="nav-item">
                         <Link to="/home" className="links-home" onClick={() => setIsOpen(false)}>Home</Link>
-                    </li>
-                    <li className="nav-item">
+                    </div>
+                    <div className="nav-item">
                         <Link to="/dashboard" className="links-dashboard" onClick={() => setIsOpen(false)}>Dashboard</Link>
-                    </li>
-                    <li className="nav-item">
+                    </div>
+                    <div className="nav-item">
                         <Link to="/projects" className="links-projects" onClick={() => setIsOpen(false)}>Projects</Link>
-                    </li>
+                    </div>
                 </ul>
+
+                
+
                 <section className="container-user">
                     <div className="notification-btn">
                         <NotificationBell />
                     </div>
-                    <span>{user?.username} ({user?.role})</span>
-                    <button onClick={handleLogout} className="btn-logout">Logout</button>
+                    <span className="user-profile">{user?.username} ({user?.role})</span>
+                    <section className="container-btn-logout">
+                        <button onClick={handleLogout} className="btn-logout">Logout</button>
+                    </section>
                 </section>
             </section>
         </nav>
