@@ -26,18 +26,30 @@
 
 *(Примечание: Если папка уже создана и вы хотите обновить код, используйте **git pull origin main**)*
 
+### 1. Настройка Корня проекта
+1. Перейдите в корень проекта **cd Full-Stack-PMS** (обычно, *Full-Stack-PMS*)
+2. Установите зависимости: **npm install**
+3. Если используете Docker - в корне проекта запустите **npm docker-up** - это создаст контейнеры с MySQL/Redis
+
 ### 2. Настройка Backend
 1. Перейдите в папку сервера: **cd backend**
 2. Установите зависимости: **npm install**
-3. Создайте файл **.env** и заполните его данными вашей БД и Redis:
-   - **DB_HOST**, **DB_USER**, **DB_PASSWORD**, **DB_NAME**
-   - **REDIS_URL** (обычно redis://127.0.0.1:6379)
-   - **JWT_SECRET**
-4. Запустите сервер: **node server.js**
+3. Откройте файл **.env** и проверьте корректность данных подключения к вашей БД и Redis:
+   - PORT=5000
+   - DB_HOST=localhost
+   - DB_PORT=3306
+   - DB_USER=app_user
+   - DB_PASSWORD=app_pass_dev
+   - DB_NAME=full_stack_pms_db
+   - JWT_SECRET=super_secret_key_change_me
+   - JWT_EXPIRES_IN=7d
+4. Запустите инициализацию MySQL базы данных: **npm run init-db**
+5. Запустите терминал MySQL/Redis: **npm run docker-it**, **npm run redis-it**
+6. Запустите сервер: **npm run dev**
 
 ### 3. Настройка Frontend
 1. Откройте новый терминал и перейдите в папку клиента: **cd frontend**
 2. Установите зависимости: **npm install**
-3. Запустите приложение: **npm start**
+3. Запустите приложение: **npm run dev**
 
-Приложение будет доступно по адресу: **http://localhost:3000**
+Приложение будет доступно по адресу: **http://localhost:5173**
