@@ -13,6 +13,8 @@ if (!fs.existsSync(reportDir)){
 
 console.log('Запуск тестов...');
 
+console.log('Результаты и отчеты тестов в папке "tests" - "test-report.json", "test-results.json"');
+
 // Запуск Jest, сохранение данных от Jest в test-results.json
 exec(`npx jest --detectOpenHandles --forceExit --json --outputFile="${rawResultsPath}"`, (error, stdout, stderr) => {
     

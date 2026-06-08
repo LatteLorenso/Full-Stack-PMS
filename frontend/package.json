@@ -7,8 +7,8 @@
     "preview": "vite preview"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "lattelorenso",
+  "license": "MIT",
   "type": "module",
   "dependencies": {
     "@fortawesome/free-regular-svg-icons": "^7.2.0",
