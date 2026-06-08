@@ -177,7 +177,7 @@
 }
 
 /* Адаптивность для мобильных */
-@media (max-width: 600px) {
+@media (max-width: 450px) {
     .quick-actions {
         grid-template-columns: 1fr;
     }

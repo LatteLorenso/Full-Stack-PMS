@@ -213,3 +213,119 @@ nav {
 .btn-edit:hover { background: var(--border-color-accent-tasks); color: white; }
 .btn-save:hover { opacity: 0.8; }
 .btn-cancel:hover { opacity: 0.8; }
+
+/* ====== Responsive Web Design ====== */
+
+/* ====== Бургер-меню ====== */
+/* Бургер (скрыт на экранах больше 1440px) */
+.burger-overlay {
+    position: relative;
+    top: 4px;
+    right: 40px;
+}
+
+.burger {
+    position: absolute;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 25px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.burger span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background-color: var(--color-text-main);
+    border-radius: 2px;
+    transition: opacity 0.8s ease;
+}
+
+/* Анимация бургера */
+.burger.active span:nth-child(1) {
+    opacity: 0.8;
+}
+
+.burger.active span:nth-child(2) {
+    opacity: 0.6;
+}
+
+.burger.active span:nth-child(3) {
+    opacity: 0.4;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 450px) {
+    .burger {
+        display: flex;
+    }
+
+    nav {
+    position: sticky;
+    top: 10px;
+    padding: 0.625rem;
+    color: white;
+    background-color: var(--color-bg-header);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    z-index: 2000;
+}
+
+.container-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navLinks {
+    display: flex;
+    gap: 0.625rem;
+    font-family: var(--body-font);
+    font-weight: 600;
+}
+
+.links-home,
+.links-dashboard,
+.links-projects,
+.links-tasks {
+    text-decoration: none;
+    color: white;
+    border-radius: 4px;
+    padding: 8px 12px;
+    transition: background-color 0.3 ease;
+}
+
+.links-home:hover { background: var(--color-accent-home); }
+
+.links-dashboard:hover { background: var(--color-accent-dashboard); }
+
+.links-projects:hover { background: var(--color-accent-projects); }
+
+.links-tasks:hover { background: var(--color-accent-tasks); }
+
+.links:hover { background-color: var(--color-accent-question); }
+
+.container-user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    font-family: var(--code-font);
+    font-weight: 500;
+}
+
+.btn-logout {
+    border: none;
+    border-radius: 4px;
+    color: white;
+    background-color: black;
+    font-size: 1rem;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-logout:hover { background-color: white; color: black; }
+}

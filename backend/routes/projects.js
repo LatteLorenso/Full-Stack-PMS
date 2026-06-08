@@ -243,9 +243,6 @@ module.exports = (redisClient) => {
             JOIN tasks t ON tf.task_id = t.id
             WHERE t.project_id = ?`, [projectId]
         );
-        if (files.length === 0) {
-            return res.status(404).json({ error: "Файл не найден" });
-        }
         const taskId = files.task_id;
         const rootDir = process.cwd();
 
