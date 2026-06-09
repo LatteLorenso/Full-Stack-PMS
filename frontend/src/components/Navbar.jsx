@@ -22,10 +22,10 @@ function Navbar() {
 
     return (
         <nav className="navbar">
-            <section className="menu-icon" onClick={toggleMenu}>
-                    <FontAwesomeIcon icon={faBars} />
-            </section>
             <section className="container-navbar">
+                <section className="menu-icon" onClick={toggleMenu}>
+                    <FontAwesomeIcon icon={faBars} />
+                </section>
 
                 <ul className={isOpen ? "nav-menu active" : "nav-menu"}>
                     <div className="nav-item">
