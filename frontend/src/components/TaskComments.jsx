@@ -9,6 +9,7 @@ function TaskComments({ taskId }) {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+    const [isOptionsOpen, setIsOptionsOpen] = useState(false);
     
     // Загрузка комментариев
     const fetchComments = async () => {
@@ -67,6 +68,10 @@ function TaskComments({ taskId }) {
         setIsCommentsOpen(true);
     }
 
+    const openOptionComments = async () => {
+        setIsOptionsOpen(true);
+    }
+
     return (
         <div className="comments-section">
             <button className="btn-toggle-comments" onClick={() => setIsCommentsOpen(!isCommentsOpen)}>
@@ -82,7 +87,7 @@ function TaskComments({ taskId }) {
                                     <strong>{comment.username}</strong>
                                     <div className="comment-options">
                                         <small>{new Date(comment.created_at).toLocaleString()}</small>
-                                        <span className="options-icon"><FontAwesomeIcon icon={faEllipsis} style={{color: "#125ed1", cursor: "pointer",}} /></span>
+                                        <span className="options-icon" onClick={() => setIsOptionsOpen(!isOptionsOpen)}><FontAwesomeIcon icon={faEllipsis} style={{color: "#125ed1", cursor: "pointer",}} /></span>
                                     </div>
                                 </div>
                                 <p className="comment-text">{comment.content}</p>
