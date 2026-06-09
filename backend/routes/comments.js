@@ -76,4 +76,9 @@ router.post('/', authenticate, async (req, res) => {
     }
 });
 
+// API Эндпоинт UPDATE comment
+// router.put('/', authenticate, async (req, res) => {
+//     const {  }
+// });
+
 module.exports = router;

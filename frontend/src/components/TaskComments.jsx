@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api'; // Убедись, что путь к api верный
 import { socket } from '../services/socket';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsis as faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import './TaskComments.css';
 
 function TaskComments({ taskId }) {
@@ -78,7 +80,10 @@ function TaskComments({ taskId }) {
                             <div key={comment.id} className="comment-item">
                                 <div className="comment-header">
                                     <strong>{comment.username}</strong>
-                                    <small>{new Date(comment.created_at).toLocaleString()}</small>
+                                    <div className="comment-options">
+                                        <small>{new Date(comment.created_at).toLocaleString()}</small>
+                                        <span className="options-icon"><FontAwesomeIcon icon={faEllipsis} style={{color: "#125ed1", cursor: "pointer",}} /></span>
+                                    </div>
                                 </div>
                                 <p className="comment-text">{comment.content}</p>
                             </div>

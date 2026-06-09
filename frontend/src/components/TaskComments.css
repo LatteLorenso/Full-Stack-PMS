@@ -33,6 +33,17 @@
     margin-top: 20px;
 }
 
+.comment-options {
+    display: flex;
+    flex-direction: row;
+    justify-self: unset;
+    gap: 8px;
+}
+
+.options-icon {
+    font-size: 1.2rem;
+}
+
 .comment-item {
     display: flex;
     flex-direction: column;
