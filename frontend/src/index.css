@@ -275,7 +275,7 @@ body
 }
 
 /* Адаптивность для мобильных */
-@media (max-width: 450px) {
+@media (max-width: 645px) {
     .container-navbar {
         position: relative;
         padding: 15px 0;
@@ -338,10 +338,6 @@ body
         font-weight: 500;
     }
 
-    .user-profile {
-        display: none;
-    }
-
 .links-home,
 .links-dashboard,
 .links-projects,
@@ -370,4 +366,10 @@ body
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+}
+
+@media (max-width: 395px) {
+    .user-profile {
+        display: none;
+    }
 }

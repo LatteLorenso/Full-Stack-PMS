@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { socket } from '../services/socket';
 import { useParams, Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleLeft as faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import '../Tasks.css';
 import TaskFiles from '../components/TaskFiles';
 import TaskComments from '../components/TaskComments';
@@ -130,11 +132,13 @@ function Tasks() {
     return (
         <div className="container-task">
             <section className="header-page">
-                <Link to={`/projects`} className="back-link">← Назад к проекту</Link>
+                <div className="container-back-link">
+                    <FontAwesomeIcon icon={faAngleLeft} style={{color: "#125ed1",}} />
+                    <Link to={`/projects`} className="back-link"> Назад к проекту</Link>
+                </div>
                 <h1>Задачи проекта</h1>
             </section>
             
-            <hr className="divider" />
             {error && <p className="error-msg">{error}</p>}
 
             {!showForm && (

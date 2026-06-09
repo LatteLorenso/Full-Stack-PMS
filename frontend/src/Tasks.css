@@ -33,11 +33,19 @@
     display: flex;
     align-items: center;
     color: black;
+    margin: 20px 0 30px 0;
+}
+
+.container-back-link {
+    position: absolute;
+    top: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .back-link {
-    position: absolute;
-    top: 35px;
+    
     text-decoration: none;
     color: #888888;
     font-size: 1.1rem;
@@ -57,7 +65,6 @@
     border: none;
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    margin: 20px 0 30px 0;
 }
 
 /* Сообщение об ошибке */
@@ -252,3 +259,41 @@
 }
 
 .btn-edit { background: var(--color-accent-tasks); color: white; width: 100%; }
+
+/* RWD */
+@media (max-width: 495px) {
+    .header-page h1 {
+        margin: 0;
+        font-size: 2rem;
+        color: black;
+    }
+
+    .back-link {
+        /* display: none; */
+        position: absolute;
+        top: 35px;
+        text-decoration: none;
+        color: #888888;
+        font-size: 0;
+        transition: color 0.3s ease;
+    }
+
+
+}
+
+@media (max-width: 690px) {
+    .menu-notification {
+        position: absolute;
+        right: -150px;
+        top: 100%;
+        width: 400px;
+        background: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border: 1px solid var(--color-accent-info);
+        border-radius: 8px;
+        z-index: 10;
+        margin-top: 5px;
+        overflow-y: auto;
+        cursor: auto;
+    }
+}
