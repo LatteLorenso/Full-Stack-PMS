@@ -133,8 +133,8 @@ function Tasks() {
         <div className="container-task">
             <section className="header-page">
                 <div className="container-back-link">
-                    <FontAwesomeIcon icon={faAngleLeft} style={{color: "#125ed1",}} />
-                    <Link to={`/projects`} className="back-link"> Назад к проекту</Link>
+                    <Link to={`/projects`} className="back-link">
+                    <span className="back-icon"><FontAwesomeIcon icon={faAngleLeft} style={{color: "#125ed1", cursor: "pointer",}} /></span> Назад к проекту</Link>
                 </div>
                 <h1>Задачи проекта</h1>
             </section>

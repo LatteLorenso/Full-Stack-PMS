@@ -31,21 +31,20 @@
 .header-page {
     position: relative;
     display: flex;
-    align-items: center;
+    align-content: center;
     color: black;
     margin: 20px 0 30px 0;
 }
 
 .container-back-link {
     position: absolute;
-    top: 30px;
+    top: 33px;
     display: flex;
     flex-direction: row;
     align-items: center;
 }
 
 .back-link {
-    
     text-decoration: none;
     color: #888888;
     font-size: 1.1rem;
@@ -263,22 +262,26 @@
 /* RWD */
 @media (max-width: 495px) {
     .header-page h1 {
-        margin: 0;
+        margin-left: 40px;
         font-size: 2rem;
         color: black;
     }
 
-    .back-link {
-        /* display: none; */
+    .container-back-link {
         position: absolute;
-        top: 35px;
+        top: 25px;
+    }
+
+    .back-link {
         text-decoration: none;
         color: #888888;
         font-size: 0;
         transition: color 0.3s ease;
     }
 
-
+    .back-icon {
+        font-size: 1.7rem;
+    }
 }
 
 @media (max-width: 690px) {
