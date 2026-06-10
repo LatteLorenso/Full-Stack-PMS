@@ -35,6 +35,7 @@
 }
 
 .comment-options {
+    position: relative;
     display: flex;
     flex-direction: row;
     justify-self: unset;
@@ -44,6 +45,34 @@
 .options-icon {
     font-size: 1.2rem;
 }
+
+.options-action {
+    display: none;
+}
+
+.options-action.active {
+    position: absolute;
+    top: 25px;
+    right: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: auto;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background: #f8f9fa;
+    box-shadow: 0 15px 20px rgba(255, 255, 255, 0.5);
+}
+
+.option-action {
+    padding: 15px;
+    text-align: right;
+    cursor: pointer;
+    color: black;
+}
+
+/* .options-action */
 
 .comment-item {
     display: flex;

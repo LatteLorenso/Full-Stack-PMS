@@ -170,11 +170,11 @@ function Tasks() {
             <section className="tasks-mine">
                 <div className="tasks-grid">
                     {tasks.map(task => (
-                        <TaskItem 
-                            key={task.id} 
-                            task={task} 
-                            onDelete={deleteTask} 
-                            onUpdate={updateTask} 
+                        <TaskItem
+                            key={task.id}
+                            task={task}
+                            onDelete={deleteTask}
+                            onUpdate={updateTask}
                         />
                     ))}
                 </div>

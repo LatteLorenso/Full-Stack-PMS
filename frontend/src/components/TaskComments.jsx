@@ -9,7 +9,8 @@ function TaskComments({ taskId }) {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [isCommentsOpen, setIsCommentsOpen] = useState(false);
-    const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+    const [isOptionsOpen, setIsOptionsOpen] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
     
     // Загрузка комментариев
     const fetchComments = async () => {
@@ -64,6 +65,16 @@ function TaskComments({ taskId }) {
         }
     };
 
+    const updateComment = async (commentId, updatedData) => {
+        try {
+            const res = await api.put(`/comments/${commentId}`, updatedData);
+            return res.data;
+        } catch (err) {
+            console.error(err);
+            setError('Ошибка обновления комменатария');
+        }
+    };
+
     const openTaskComments = async () => {
         setIsCommentsOpen(true);
     }
@@ -87,7 +98,16 @@ function TaskComments({ taskId }) {
                                     <strong>{comment.username}</strong>
                                     <div className="comment-options">
                                         <small>{new Date(comment.created_at).toLocaleString()}</small>
-                                        <span className="options-icon" onClick={() => setIsOptionsOpen(!isOptionsOpen)}><FontAwesomeIcon icon={faEllipsis} style={{color: "#125ed1", cursor: "pointer",}} /></span>
+                                        <span className="options-icon" onClick={(e) => { e.stopPropagation(); setIsOptionsOpen(isOptionsOpen === comment.id ? null : comment.id); }}><FontAwesomeIcon icon={faEllipsis} style={{color: "#125ed1", cursor: "pointer",}} /></span>
+                                        <div className={isOptionsOpen ? "options-action active" : "options-action"}>
+                                            {isOptionsOpen === comment.id && (
+                                                <section className="comment-mini-menu">
+                                                    <button onClick={() => handle} className="option-action"></button>
+                                                </section>
+                                            )}
+                                            <span className="option-action">Изменить</span>
+                                            <span className="option-action">Удалить</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <p className="comment-text">{comment.content}</p>
