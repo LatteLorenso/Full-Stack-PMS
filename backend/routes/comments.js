@@ -76,44 +76,93 @@ router.post('/', authenticate, async (req, res) => {
     }
 });
 
-// API Эндпоинт UPDATE comment
-router.put('/comments/:id', authenticate, async (req, res) => {
+// API Эндпоинт UPDATE update comment
+router.put('/:id', authenticate, async (req, res) => {
     const commentId = req.params.id;
     const { content } = req.body;
     const db = getDb();
 
-    const [commentRows] = await db.query('SELECT * FROM comments WHERE id = ?', [commentId]);
-    if (commentRows.length === 0) {
-        return res.status(404).json({ error: "Комментарий не найден" });
-    }
-    const comment = commentRows[0];
-
-    const [projId] = await db.query('SELECT project_id FROM tasks WHERE id = ?', [comment.task_id]);
-    if (projId.length === 0) {
-        return res.status(404).json({ error: "Задача не найдена" });
-    }
-    const projectId = projId[0].project_id;
-
-    const [projRows] = await db.query('SELECT owner_id FROM projects WHERE id = ?', [projectId]);
-    if (projRows.length === 0) {
-        return res.status(404).json({ error: "Проект не найден" });
-    }
-    const projOwner = projRows[0].owner_id;
-
-    const [member] = await db.query(
-        'SELECT project_id, user_id FROM project_members WHERE project_id = ? AND user_id = ?',
-        [projectId, req.user.id]
-    );
+    try {
+        const [commentRows] = await db.query('SELECT * FROM comments WHERE id = ?', [commentId]);
+        if (commentRows.length === 0) {
+            return res.status(404).json({ error: "Комментарий не найден" });
+        }
+        const comment = commentRows[0];
     
-    if (projOwner[0].owner_id !== req.user.id && member.length === 0) {
-        return res.status(403).json({ error: "Вы не можете отредактировать комментарий если не связаны с проектом в качестве участника/владельца/" });
+        const [projId] = await db.query('SELECT project_id FROM tasks WHERE id = ?', [comment.task_id]);
+        if (projId.length === 0) {
+            return res.status(404).json({ error: "Задача не найдена" });
+        }
+        const projectId = projId[0].project_id;
+    
+        const [projRows] = await db.query('SELECT owner_id FROM projects WHERE id = ?', [projectId]);
+        if (projRows.length === 0) {
+            return res.status(404).json({ error: "Проект не найден" });
+        }
+        const projOwner = projRows[0].owner_id;
+    
+        const [member] = await db.query(
+            'SELECT project_id, user_id FROM project_members WHERE project_id = ? AND user_id = ?',
+            [projectId, req.user.id]
+        );
+        
+        if (req.user.role !== 'admin' && projOwner !== req.user.id && member.length === 0) {
+            return res.status(403).json({ error: "Вы не можете отредактировать комментарий, вы не Участник/Владелец/Админ" });
+        }
+    
+        await db.query(
+            `UPDATE comments SET content = ?, updated_at = NOW() WHERE id = ?`, [content, commentId]
+        );
+    
+        res.json({ commentId, message: 'Комментарий обновлен' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Ошибка обновления комментария" });
     }
+});
 
-    await db.query(
-        `UPDATE comments SET content = ?, updated_at = NOW() WHERE id = ?`, [content, commentId]
-    );
+// API Эндпоинт DELETE remove comment
+router.delete('/:id', authenticate, async (req, res) => {
+    const commentId = req.params.id;
+    const db = getDb();
 
-    res.json({ message: 'Комментарий обновлен' });
+    try {
+        const [commentRows] = await db.query('SELECT task_id, user_id, content FROM comments WHERE id = ?', [commentId]);
+        if (commentRows.length === 0) {
+            return res.status(404).json({ error: "Комментарий не найден" });
+        }
+        const comment = commentRows[0];
+    
+        const [projId] = await db.query('SELECT project_id FROM tasks WHERE id = ?', [comment.task_id]);
+        if (projId.length === 0) {
+            return res.status(404).json({ error: "Задача не найдена" });
+        }
+        const projectId = projId[0].project_id;
+    
+        const [projRows] = await db.query('SELECT owner_id FROM projects WHERE id = ?', [projectId]);
+        if (projRows.length === 0) {
+            return res.status(404).json({ error: "Проект не найден" });
+        }
+        const projOwner = projRows[0].owner_id;
+    
+        const [member] = await db.query(
+            'SELECT project_id, user_id FROM project_members WHERE project_id = ? AND user_id = ?',
+            [projectId, req.user.id]
+        );
+        
+        if (req.user.role !== 'admin' && projOwner !== req.user.id && member.length === 0) {
+            return res.status(403).json({ error: "Вы не можете удалить комментарий, вы не Участник/Владелец/Админ" });
+        }
+    
+        await db.query(
+            `DELETE FROM comments WHERE id = ?`, [commentId]
+        );
+    
+        res.json({ commentId, message: 'Комментарий удален' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Ошибка удаления комментария" });
+    }
 });
 
 module.exports = router;
