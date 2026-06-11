@@ -173,7 +173,7 @@
 .edit-textarea {
     width: 100%;
     padding: 5px;
-    font-size: var(--body-font);
+    font-family: var(--body-font);
     background: rgba(134, 134, 134, 0.11);
     border: 2px solid transparent;
     border-radius: 6px;

@@ -45,10 +45,28 @@ function TaskComments({ taskId }) {
                 }
             };
 
+            const handleUpdateComment = (data) => {
+                if (data.taskId === parseInt(taskId)) {
+                    setComments(prev => prev.map(c => 
+                        c.id === data.id ? { ...c, content: data.content } : c
+                    ));
+                }
+            };
+
+            const handleDeleteComment = (data) => {
+                if (data.taskId === parseInt(taskId)) {
+                    setComments(prev => prev.filter(c => c.id !== data.id));
+                }
+            };
+
             socket.on('new_comment', handleNewComment);
+            socket.on('comment_updated', handleUpdateComment);
+            socket.on('comment_deleted', handleDeleteComment);
             
             // Очистка слушателя при размонтировании или смене taskId
             return () => socket.off('new_comment', handleNewComment);
+            return () => socket.off('comment_updated', handleUpdateComment);
+            return () => socket.off('comment_deleted', handleDeleteComment);
         }
     }, [taskId]);
 

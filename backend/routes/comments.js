@@ -114,6 +114,18 @@ router.put('/:id', authenticate, async (req, res) => {
         await db.query(
             `UPDATE comments SET content = ?, updated_at = NOW() WHERE id = ?`, [content, commentId]
         );
+
+        // WebSocket уведомление о комментарии
+        const io = req.app.get('io');
+        if (io) {
+            io.to(projectId.toString()).emit('comment_updated', {
+                id: parseInt(commentId),
+                taskId: comment.task_id,
+                username: req.user.username,
+                content: content,
+                message: `${req.user.username} обновил комментарий задачи`
+            });
+        }
     
         res.json({ commentId, message: 'Комментарий обновлен' });
     } catch (err) {
@@ -128,7 +140,7 @@ router.delete('/:id', authenticate, async (req, res) => {
     const db = getDb();
 
     try {
-        const [commentRows] = await db.query('SELECT task_id, user_id, content FROM comments WHERE id = ?', [commentId]);
+        const [commentRows] = await db.query('SELECT task_id, user_id FROM comments WHERE id = ?', [commentId]);
         if (commentRows.length === 0) {
             return res.status(404).json({ error: "Комментарий не найден" });
         }
@@ -158,6 +170,17 @@ router.delete('/:id', authenticate, async (req, res) => {
         await db.query(
             `DELETE FROM comments WHERE id = ?`, [commentId]
         );
+
+        // WebSocket уведомление о комментарии
+        const io = req.app.get('io');
+        if (io) {
+            io.to(projectId.toString()).emit('comment_deleted', {
+                id: parseInt(commentId),
+                taskId: comment.task_id,
+                username: req.user.username,
+                message: `${req.user.username} удалил комментарий из задачи`
+            });
+        }
     
         res.json({ message: 'Комментарий удален' });
     } catch (err) {
