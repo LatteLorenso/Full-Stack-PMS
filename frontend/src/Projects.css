@@ -18,7 +18,7 @@
     margin: 0px 0 10px;
 }
 
-hr {
+.card-divider {
     background: #888888;
     height: 1px;
     margin: 5px 0 30px;
@@ -68,7 +68,7 @@ hr {
     padding: 16px;
     background: white;
     color: black;
-    border: none;
+    border: 2px solid transparent;
     border-radius: 6px;
     font-size: 1rem;
 }
@@ -285,13 +285,15 @@ hr {
     color: black;
 }
 
+.modal-divider {
+    background: #888888;
+    height: 1px;
+    margin: 20px 0 20px;
+}
+
 .user-list {
     max-height: 300px;
     overflow-y: auto;
-    margin-bottom: 20px;
-    padding-right: 5px; /* Место для скроллбара */
-    
-    /* Кастомный скроллбар */
     scrollbar-width: thin;
     scrollbar-color: #555 #2a2a2a;
 }
@@ -376,7 +378,7 @@ hr {
     font-weight: bold;
     cursor: pointer;
     transition: background 0.3s ease;
-    margin-top: 15px;
+    margin-top: 5px;
 }
 
 /* Режим добавления (зеленый/синий) */

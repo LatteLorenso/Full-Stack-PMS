@@ -122,7 +122,7 @@ function Projects() {
         <div className="container-project">
             <h1>Проекты</h1>
             <p>Все проекты, созданные Вашей командой.</p>
-            <hr />
+            <hr className="card-divider"/>
             {error && <p className="error-msg">{error}</p>}
 
             {!showForm && (
@@ -226,7 +226,7 @@ function ProjectCard({ project, onDelete, onAddMember, onUpdate }) {
                         <Link to={`/projects/${project.id}/tasks`} className="link-tasks">Задачи проекта</Link>
                     </section>
 
-                    <hr />
+                    <hr className="card-divider"/>
 
                     <div className="project-settings">
                         <button onClick={onAddMember} className="btn-add">Добавить участников</button>
@@ -247,7 +247,7 @@ function ProjectCard({ project, onDelete, onAddMember, onUpdate }) {
                                 <h1>{project.name}</h1>
                                 <p><strong>Описание:</strong> {project.description}</p>
                                 <p><strong>Основатель:</strong> {project.owner_name}</p>
-                                <hr />
+                                <hr className="modal-divider"/>
                                 <p><em>Отчет сгенерирован автоматически</em></p>
                             </section>
                         </section>
