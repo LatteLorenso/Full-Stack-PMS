@@ -37,7 +37,7 @@ function TaskComments({ taskId }) {
                 // Проверяем, что комментарий относится именно к этой задаче
                 if (data.taskId === parseInt(taskId)) {
                     setComments(prev => [...prev, {
-                        id: data.id || Date.now(), // Используем ID с бэка, если он пришел
+                        id: data.id,
                         content: data.content,
                         username: data.username,
                         created_at: new Date().toISOString()
@@ -67,12 +67,22 @@ function TaskComments({ taskId }) {
     };
 
     const startEditing = (comment) => {
+        console.log("Начало редактирования:", comment);
+        if (!comment.id) {
+            alert("У коммента нет ID");
+            return;
+        }
         setEditingId(comment.id);
         setEditText(comment.content);
         setIsOptionsOpen(null);
     };
 
     const saveEdit = async (commentId) => {
+        console.log("Попытка сохранить ID:", commentId);
+        if (!commentId) {
+            alert("ID коммента потерян");
+            return;
+        }
         if (!editText.trim()) return;
         try {
             await api.put(`/comments/${commentId}`, { content: editText });

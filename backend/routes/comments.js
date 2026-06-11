@@ -50,7 +50,7 @@ router.post('/', authenticate, async (req, res) => {
         const [proj] = await db.query('SELECT owner_id FROM projects WHERE id = ?', [projectId]);
     
         if (req.user.role !== 'admin' && proj[0].owner_id !== req.user.id && member.length === 0) {
-            return res.status(403).json({ error: "Вы не можете создать комментарий если не связаны с проектом в качестве участника/владельца/админа" });
+            return res.status(403).json({ error: "Вы не можете создать комментарий, вы не Участник/Владелец/Админ" });
         }
     
         const [result] = await db.query(
@@ -62,6 +62,7 @@ router.post('/', authenticate, async (req, res) => {
         const io = req.app.get('io');
         if (io) {
             io.to(projectId.toString()).emit('new_comment', {
+                id: result.insertId,
                 taskId: parseInt(taskId),
                 username: req.user.username,
                 content: content,
@@ -158,7 +159,7 @@ router.delete('/:id', authenticate, async (req, res) => {
             `DELETE FROM comments WHERE id = ?`, [commentId]
         );
     
-        res.json({ commentId, message: 'Комментарий удален' });
+        res.json({ message: 'Комментарий удален' });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Ошибка удаления комментария" });
