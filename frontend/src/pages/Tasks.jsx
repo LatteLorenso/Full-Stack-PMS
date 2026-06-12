@@ -242,24 +242,24 @@ function TaskItem({ task, onDelete, onUpdate }) {
                 </>
             ) : (
                 <div className="edit-mode">
-                    <input 
-                        className="edit-input task" 
-                        value={title} 
-                        onChange={(e) => setTitle(e.target.value)} 
-                        placeholder="Название задачи" 
+                    <input
+                        className="edit-input task"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="Название задачи"
                     />
                 
-                    <textarea 
-                        className="edit-input task" 
-                        value={description} 
-                        onChange={(e) => setDescription(e.target.value)} 
+                    <textarea
+                        className="edit-input task"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                         placeholder="Описание задачи"
                         rows="3"
                     />
                 
-                    <select 
-                        className="edit-input task" 
-                        value={status} 
+                    <select
+                        className="edit-input task"
+                        value={status}
                         onChange={(e) => setStatus(e.target.value)}
                     >
                         <option value="todo">К выполнению</option>
@@ -267,18 +267,18 @@ function TaskItem({ task, onDelete, onUpdate }) {
                         <option value="done">Готово</option>
                     </select>
                 
-                    <input 
-                        className="edit-input task" 
-                        value={assignedTo} 
-                        onChange={(e) => setAssignedTo(e.target.value)} 
-                        placeholder="ID исполнителя" 
+                    <input
+                        className="edit-input task"
+                        value={assignedTo}
+                        onChange={(e) => setAssignedTo(e.target.value)}
+                        placeholder="ID исполнителя"
                     />
                 
                     <input 
-                        className="edit-input task" 
-                        type="date" 
-                        value={dueDate ? dueDate.split('T')[0] : ''} 
-                        onChange={(e) => setDueDate(e.target.value)} 
+                        className="edit-input task"
+                        type="date"
+                        value={dueDate ? dueDate.split('T')[0] : ''}
+                        onChange={(e) => setDueDate(e.target.value)}
                     />
                 
                     <div className="task-actions">

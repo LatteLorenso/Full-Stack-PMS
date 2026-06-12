@@ -181,19 +181,14 @@ body
     border-radius: 6px;
     color: black;
     font-size: 0.95rem;
-    outline: none;
     transition: border-color 0.3s ease;
     box-sizing: border-box;
     font-family: var(--body-font);
 }
 
-.edit-input.task:focus {
-    border-color: var(--color-accent-tasks, #125ed1);
-}
+.edit-input.task:focus { outline: none; border-color: var(--color-accent-tasks, #125ed1); }
 
-.edit-input.project:focus {
-    border-color: var(--color-accent-projects, #23b879);
-}
+.edit-input.project:focus { border-color: var(--color-accent-projects, #23b879); }
 
 .btn-del {
     position: absolute;
